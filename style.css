@@ -1,0 +1,97 @@
+body {
+    margin: 53px 1rem 1rem 0;
+    padding: 1rem 0 0 1rem;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 53px;
+    backgroud-color: #2975ac;
+}
+
+header > * {
+    display: inline;
+    vertical-align: middle;
+    line-height: 53px;
+    height: 53px;
+    opacity: 0.8;
+}
+
+header h1 {
+    margin: 0;
+    border: 0;
+    padding: 0;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+header a, header a:focus, header a:hover, header a:active {
+    text-decoration: none;
+    color: #ffffff;
+}
+
+header img {
+    vertical-align: middle;
+}
+
+header *:hover {
+    opacity: 1;
+}
+
+footer {
+    font-size: smaller;
+}
+
+body {
+    max-width: 50rem;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: sans-serif;
+}
+
+main, footer {
+    width: 100%;
+    margin: 0 -1rem;
+}
+
+footer, nav, article {
+    box-sizing: border-box;
+    float: left;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+nav {
+    width: 25%;
+}
+
+nav li {
+    text-transform: capitalize;
+}
+
+article {
+    width: 75%;
+}
+
+article h2 {
+    text-transform: capitalize;
+}
+
+footer {
+    clear: both;
+}
+
+.temp {
+    visibility: hidden;
+}
+
+.bullet {
+    margin-right: 1rem;
+}
+
+html.js .temp {
+    visibility: visible;
+}
