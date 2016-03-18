@@ -1,6 +1,6 @@
 'use strict';
 
-const API_KEY = 'c5oe47cc7l4oookck8co4o4owg4w4o8',
+const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     MODE = 'param',
     TYPE_DOMAIN = 'domain',
     TYPE_GROUP = 'group',
