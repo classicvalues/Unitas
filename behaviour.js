@@ -206,7 +206,7 @@ const init = function($, api) {
 requirejs.config({
     paths: {
         jquery: 'https://www.w3.org/scripts/jquery/2.1/jquery.min',
-        w3capi: 'https://raw.githubusercontent.com/w3c/node-w3capi/master/lib/w3capi'
+        w3capi: 'w3capi'
     }
 });
 

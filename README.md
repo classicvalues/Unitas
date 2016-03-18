@@ -4,7 +4,7 @@ Prototypes for the &ldquo;dynamic pages&rdquo; project.
 
 ## Examples
 
-See [the index](https://w3c.github.io/unitas/).
+See [the index](https://w3c.github.io/Unitas/).
 
 ## Related projects on GitHub
 
