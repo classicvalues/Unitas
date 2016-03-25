@@ -18,13 +18,13 @@ header > * {
     line-height: 53px;
     height: 53px;
     opacity: 0.8;
+    color: #ffffff;
 }
 
 header h1 {
     margin: 0;
     border: 0;
     padding: 0;
-    color: #ffffff;
     font-size: 1.5rem;
 }
 
@@ -37,7 +37,7 @@ header img {
     vertical-align: middle;
 }
 
-header *:hover {
+header > a:hover, header > h1:hover {
     opacity: 1;
 }
 
@@ -97,18 +97,9 @@ footer {
     clear: both;
 }
 
-.temp {
-    visibility: hidden;
-}
-
 .bullet {
     margin-right: 1rem;
 }
-
-html.js .temp {
-    visibility: visible;
-}
-
 span.yes {
     color: #00c000;
 }
