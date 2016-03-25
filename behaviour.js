@@ -4,15 +4,33 @@ const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     MODE = 'param',
     TYPE_DOMAIN = 'domain',
     TYPE_GROUP = 'group',
+    TYPE_CHARTER = 'charter',
     TYPE_SPEC = 'spec',
+    TYPE_VERSION = 'version',
     TYPE_USER = 'user',
     TYPE_SERVICE = 'service',
+    TYPE_PARTICIPATION = 'participation',
+    TYPE_AFFILIATION = 'affiliation',
     SECTIONS_DOMAIN = ['groups', 'services', 'users'],
     SECTIONS_GROUP = ['chairs', 'services', 'specifications', 'teamcontacts', 'users', 'charters', 'participations'],
+    SECTIONS_CHARTER = [],
     SECTIONS_SPEC = [/* 'superseded', 'supersedes', */ 'versions' /*, 'latest' */],
+    SECTIONS_VERSION = ['deliverers', 'editors', 'successors', 'predecessors'],
     SECTIONS_USER = ['affiliations', 'groups', /* 'participations', */ 'specifications'],
     SECTIONS_SERVICE = ['groups'],
-    SECTIONS = {'domain': SECTIONS_DOMAIN, 'group': SECTIONS_GROUP, 'spec': SECTIONS_SPEC, 'user': SECTIONS_USER, 'service': SECTIONS_SERVICE};
+    SECTIONS_PARTICIPATION = ['participants'],
+    SECTIONS_AFFILIATION = ['participants', 'participations'],
+    SECTIONS = {
+        'domain': SECTIONS_DOMAIN,
+        'group': SECTIONS_GROUP,
+        'charter': SECTIONS_CHARTER,
+        'spec': SECTIONS_SPEC,
+        'version': SECTIONS_VERSION,
+        'user': SECTIONS_USER,
+        'service': SECTIONS_SERVICE,
+        'participation': SECTIONS_PARTICIPATION,
+        'affiliation': SECTIONS_AFFILIATION,
+    };
 
 var type,
     id,
@@ -64,9 +82,25 @@ const processURL = function() {
     if(params.d) {
         type = TYPE_DOMAIN;
         id = params.d;
+    } else if(params.c) {
+        if (params.g) {
+            type = TYPE_CHARTER;
+            id = {g: params.g, c: params.c};
+        } else {
+            window.alert('Error: to retrieve a charter, the ID of the group is needed too.')
+            return false;
+        }
     } else if(params.g) {
         type = TYPE_GROUP;
         id = params.g;
+    } else if(params.v) {
+        if (params.s) {
+            type = TYPE_VERSION;
+            id = {s: params.s, v: params.v};
+        } else {
+            window.alert('Error: to retrieve a version, the shortname of the spec is needed too.')
+            return false;
+        }
     } else if(params.s) {
         type = TYPE_SPEC;
         id = params.s;
@@ -76,10 +110,17 @@ const processURL = function() {
     } else if(params.x) {
         type = TYPE_SERVICE;
         id = params.x;
+    } else if(params.p) {
+        type = TYPE_PARTICIPATION;
+        id = params.p;
+    } else if(params.a) {
+        type = TYPE_AFFILIATION;
+        id = params.a;
     } else {
         window.alert('Error: missing parameters in URL.')
         return false;
     }
+    console.log('type: ' + type + '; id: ' + id);
     return true;
 };
 
@@ -90,6 +131,36 @@ const buildIndex = function() {
         result += '<li><a href="#' + sections[s] + '">' + sections[s] + '</a></li>\n';
     }
     return result;
+};
+
+const buildLink = function(href) {
+    const REGEX_DOMAIN = /\/domains\/(\d+)$/i,
+        REGEX_GROUP = /\/groups\/(\d+)$/i,
+        REGEX_CHARTER = /\/groups\/(\d+)\/charters\/(\d+)$/i,
+        REGEX_SPEC = /\/specifications\/([^\/]+)$/i,
+        REGEX_VERSION = /\/specifications\/(.+)\/versions\/(\d+)$/i,
+        REGEX_USER = /\/users\/([a-zA-z\d]+)$/i,
+        REGEX_SERVICE = /\/services\/(\d+)$/i,
+        REGEX_PARTICIPATIONS = /\/participations\/(\d+)$/i,
+        REGEX_AFFILIATIONS = /\/affiliations\/(\d+)$/i;
+    var match = REGEX_DOMAIN.exec(href);
+    if (match && match.length > 1) return 'entity.html?d=' + match[1];
+    match = REGEX_GROUP.exec(href);
+    if (match && match.length > 1) return 'entity.html?g=' + match[1];
+    match = REGEX_CHARTER.exec(href);
+    if (match && match.length > 2) return 'entity.html?g=' + match[1] + '&c=' + match[2];
+    match = REGEX_SPEC.exec(href);
+    if (match && match.length > 1) return 'entity.html?s=' + match[1];
+    match = REGEX_VERSION.exec(href);
+    if (match && match.length > 2) return 'entity.html?s=' + match[1] + '&v=' + match[2];
+    match = REGEX_USER.exec(href);
+    if (match && match.length > 1) return 'entity.html?u=' + match[1];
+    match = REGEX_SERVICE.exec(href);
+    if (match && match.length > 1) return 'entity.html?x=' + match[1];
+    match = REGEX_PARTICIPATIONS.exec(href);
+    if (match && match.length > 1) return 'entity.html?p=' + match[1];
+    match = REGEX_AFFILIATIONS.exec(href);
+    if (match && match.length > 1) return 'entity.html?a=' + match[1];
 };
 
 /**
@@ -113,14 +184,10 @@ const init = function($, api) {
                         '<ul>\n';
                     for(var i in data) {
                         if (data[i]) {
-                            /* if (data[i].href && data[i].title) {
-                                section += '<li><a href="' + data[i].href + '">' + data[i].title + '</a></li>\n';
-                            } else */ if (data[i].title) {
-                                section += '<li>' + data[i].title + '</li>\n';
-                            } else if (data[i].name) {
-                                section += '<li>' + data[i].name + '</li>\n';
+                            if (data[i].href && data[i].title) {
+                                section += '<li><a href="' + buildLink(data[i].href) + '">' + data[i].title + '</a></li>\n';
                             } else if (data[i].href) {
-                                section += '<li><code>' + normaliseURI(data[i].href) + '</code></li>\n';
+                                section += '<li><a href="' + buildLink(data[i].href) + '">[Item]</a></li>\n';
                             } else {
                                 section += '<li>[Type of item not supported yet]</li>\n';
                             }
@@ -137,20 +204,33 @@ const init = function($, api) {
         const fetchSections = function() {
             const sections = SECTIONS[type];
             var func, thisSec;
-            if (TYPE_DOMAIN === type) {
-                func = api.domain;
-            } else if (TYPE_GROUP === type) {
-                func = api.group;
-            } else if (TYPE_SPEC === type) {
-                func = api.specification;
-            } else if (TYPE_USER === type) {
-                func = api.user;
-            } else if (TYPE_SERVICE === type) {
-                func = api.service;
-            }
-            for(var s in sections) {
-                thisSec = sections[s];
-                func(id)[thisSec]().fetch(buildHandler(thisSec));
+            if (TYPE_VERSION === type) {
+                for(var s in sections) {
+                    thisSec = sections[s];
+                    api.specification(id.s).version(id.v)[thisSec]().fetch(buildHandler(thisSec));
+                }
+            } else {
+                if (TYPE_DOMAIN === type) {
+                    func = api.domain;
+                } else if (TYPE_GROUP === type) {
+                    func = api.group;
+                } else if (TYPE_CHARTER === type) {
+                    func = api.charter;
+                } else if (TYPE_SPEC === type) {
+                    func = api.specification;
+                } else if (TYPE_USER === type) {
+                    func = api.user;
+                } else if (TYPE_SERVICE === type) {
+                    func = api.service;
+                } else if (TYPE_PARTICIPATION === type) {
+                    func = api.participation;
+                } else if (TYPE_AFFILIATION === type) {
+                    func = api.affiliation;
+                }
+                for(var s in sections) {
+                    thisSec = sections[s];
+                    func(id)[thisSec]().fetch(buildHandler(thisSec));
+                }
             }
         };
 
@@ -158,13 +238,15 @@ const init = function($, api) {
             if (error) {
                 window.alert('Error: "' + error + '""');
             } else {
-                console.dir(data);
+                console.dir();
                 var name = '[Item]';
                 if (data.name) name = data.name;
                 else if (data.title) name = data.title;
                 else if (data.link) name = '<code>' + normaliseURI(data.link) + '</code>';
+                else if (data.uri) name = '<code>' + normaliseURI(data.uri) + '</code>';
+                else if (data.created) name = data.created;
                 title.html(title.html() + ' &mdash; ' + name);
-                h1.html('<a href="#">' + name + '</a>'); // + ' (' + data.type + ')');
+                h1.html('<a href="#">' + name + '</a>');
                 index.html(buildIndex());
                 fetchSections();
             }
@@ -174,12 +256,20 @@ const init = function($, api) {
             api.domain(id).fetch(processEntity);
         } else if (TYPE_GROUP === type) {
             api.group(id).fetch(processEntity);
+        } else if (TYPE_CHARTER === type) {
+            api.group(id.g).charter(id.c).fetch(processEntity);
         } else if (TYPE_SPEC === type) {
             api.specification(id).fetch(processEntity);
+        } else if (TYPE_VERSION === type) {
+            api.specification(id.s).version(id.v).fetch(processEntity);
         } else if (TYPE_USER === type) {
             api.user(id).fetch(processEntity);
         } else if (TYPE_SERVICE === type) {
             api.service(id).fetch(processEntity);
+        } else if (TYPE_PARTICIPATION === type) {
+            api.participation(id).fetch(processEntity);
+        } else if (TYPE_AFFILIATION === type) {
+            api.affiliation(id).fetch(processEntity);
         }
     };
 
