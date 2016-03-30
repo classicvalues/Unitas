@@ -6,6 +6,12 @@ Prototypes for the &ldquo;dynamic pages&rdquo; project.
 
 See [the index](https://w3c.github.io/Unitas/).
 
+## Contributing
+
+NB: the [W3C API key](https://w3c.github.io/w3c-api/#apikeys) embedded in this project will work *from the domain `w3c.github.io` only*, as it is for
+demonstration purposes on GitHub pages.
+Make sure you [replace it](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js#L3) with your own API to use it with `localhost://` or other origins.
+
 ## Related projects on GitHub
 
 * [w3c-api](https://github.com/w3c/w3c-api): the W3C API.
