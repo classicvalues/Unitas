@@ -68,11 +68,16 @@ nav {
     width: 25%;
 }
 
+html.js nav {
+    position: fixed;
+}
+
 nav li {
     text-transform: capitalize;
 }
 
 article {
+    float: right;
     width: 75%;
 }
 
