@@ -2,6 +2,7 @@
 
 const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     MODE = 'param',
+    TYPE_W3C = 'w3c',
     TYPE_DOMAIN = 'domain',
     TYPE_GROUP = 'group',
     TYPE_CHARTER = 'charter',
@@ -81,7 +82,7 @@ const processURL = function() {
     const params = getUrlVars();
     if(params.d) {
         type = TYPE_DOMAIN;
-        id = params.d;
+        id = ('all' !== params.d) ? params.d : undefined;
     } else if(params.c) {
         if (params.g) {
             type = TYPE_CHARTER;
@@ -92,7 +93,7 @@ const processURL = function() {
         }
     } else if(params.g) {
         type = TYPE_GROUP;
-        id = params.g;
+        id = ('all' !== params.g) ? params.g : undefined;
     } else if(params.v) {
         if (params.s) {
             type = TYPE_VERSION;
@@ -103,7 +104,7 @@ const processURL = function() {
         }
     } else if(params.s) {
         type = TYPE_SPEC;
-        id = params.s;
+        id = ('all' !== params.s) ? params.s : undefined;
     } else if(params.u) {
         type = TYPE_USER;
         id = params.u;
@@ -115,9 +116,9 @@ const processURL = function() {
         id = params.p;
     } else if(params.a) {
         type = TYPE_AFFILIATION;
-        id = params.a;
+        id = ('all' !== params.a) ? params.a : undefined;
     } else {
-        window.alert('Error: missing parameters in URL.')
+        type = TYPE_W3C;
         return false;
     }
     console.log('type: ' + type + '; id: ' + id);
@@ -172,7 +173,28 @@ const buildLink = function(href) {
 
 const init = function($, api) {
 
+    const buildRoot = function() {
+        const section = '<ul>\n' +
+            '<li><a href="entity.html?d=all">All domains</a></li>\n' +
+            '<li><a href="entity.html?g=all">All groups</a></li>\n' +
+            '<li><a href="entity.html?s=all">All specifications</a></li>\n' +
+            '<li><a href="entity.html?a=all">All affiliations</a></li>\n' +
+            '</ul>\n';
+        article.append(section);
+    };
+
     const retrieveEntity = function() {
+
+        const renderItem = function(item) {
+            if (!item)
+                return window.alert('Error: tried to render an undefined item.')
+            if (item.href && item.title)
+                return '<li><a href="' + buildLink(item.href) + '">' + item.title + '</a></li>\n';
+            else if (item.href)
+                return '<li><a href="' + buildLink(item.href) + '">[Item]</a></li>\n';
+            else
+                return '<li>[Type of item not supported yet]</li>\n';
+        };
 
         const buildHandler = function(s) {
             return function(error, data) {
@@ -182,23 +204,20 @@ const init = function($, api) {
                     console.dir(data);
                     var section = '<h2 id="' + s + '">' + s + '</h2>\n' +
                         '<ul>\n';
-                    for(var i in data) {
-                        if (data[i]) {
-                            if (data[i].href && data[i].title) {
-                                section += '<li><a href="' + buildLink(data[i].href) + '">' + data[i].title + '</a></li>\n';
-                            } else if (data[i].href) {
-                                section += '<li><a href="' + buildLink(data[i].href) + '">[Item]</a></li>\n';
-                            } else {
-                                section += '<li>[Type of item not supported yet]</li>\n';
-                            }
-                        } else {
-                            section += '<li>[Type of item not supported yet]</li>\n';
-                        }
-                    }
+                    for(var i of data)
+                        section += renderItem(i);
                     section += '</ul>\n';
                     article.append(section);
                 }
             };
+        };
+
+        const listEntities = function(list) {
+            var section = '<ul>\n';
+            for(var i of list)
+                section += renderItem(i);
+            section += '</ul>\n';
+            article.append(section);
         };
 
         const fetchSections = function() {
@@ -238,28 +257,49 @@ const init = function($, api) {
             if (error) {
                 window.alert('Error: "' + error + '""');
             } else {
-                console.dir();
                 var name = '[Item]';
-                if (data.name) name = data.name;
-                else if (data.title) name = data.title;
-                else if (data.link) name = '<code>' + normaliseURI(data.link) + '</code>';
-                else if (data.uri) name = '<code>' + normaliseURI(data.uri) + '</code>';
-                else if (data.created) name = data.created;
+                if (undefined === id) {
+                    name = 'All ';
+                    if (TYPE_DOMAIN === type)
+                        name += 'domains';
+                    if (TYPE_GROUP === type)
+                        name += 'groups';
+                    if (TYPE_SPEC === type)
+                        name += 'specifications';
+                    if (TYPE_AFFILIATION === type)
+                        name += 'affiliations';
+                    listEntities(data);
+                } else {
+                    if (data.name) name = data.name;
+                    else if (data.title) name = data.title;
+                    else if (data.link) name = '<code>' + normaliseURI(data.link) + '</code>';
+                    else if (data.uri) name = '<code>' + normaliseURI(data.uri) + '</code>';
+                    else if (data.created) name = data.created;
+                    index.html(buildIndex());
+                    fetchSections();
+                }
                 title.html(title.html() + ' &mdash; ' + name);
                 h1.html('<a href="#">' + name + '</a>');
-                index.html(buildIndex());
-                fetchSections();
             }
         };
 
         if (TYPE_DOMAIN === type) {
-            api.domain(id).fetch(processEntity);
+            if (id)
+                api.domain(id).fetch(processEntity);
+            else
+                api.domains().fetch(processEntity);
         } else if (TYPE_GROUP === type) {
-            api.group(id).fetch(processEntity);
+            if (id)
+                api.group(id).fetch(processEntity);
+            else
+                api.groups().fetch(processEntity);
         } else if (TYPE_CHARTER === type) {
             api.group(id.g).charter(id.c).fetch(processEntity);
         } else if (TYPE_SPEC === type) {
-            api.specification(id).fetch(processEntity);
+            if (id)
+                api.specification(id).fetch(processEntity);
+            else
+                api.specifications().fetch(processEntity);
         } else if (TYPE_VERSION === type) {
             api.specification(id.s).version(id.v).fetch(processEntity);
         } else if (TYPE_USER === type) {
@@ -269,24 +309,29 @@ const init = function($, api) {
         } else if (TYPE_PARTICIPATION === type) {
             api.participation(id).fetch(processEntity);
         } else if (TYPE_AFFILIATION === type) {
-            api.affiliation(id).fetch(processEntity);
+            if (id)
+                api.affiliation(id).fetch(processEntity);
+            else
+                api.affiliations().fetch(processEntity);
         }
     };
 
     $(document).ready(function() {
+        title = $('head title');
+        head = $('header');
+        h1 = $('header h1');
+        nav = $('nav');
+        index = $('#index');
+        article = $('article');
         if (processURL()) {
             api.apiKey = API_KEY;
             api.authMode = MODE;
-            title = $('head title');
-            head = $('header');
-            h1 = $('header h1');
-            nav = $('nav');
-            index = $('#index');
-            article = $('article');
             retrieveEntity();
             setTimeout(function() {
                 $('html').removeClass('no-js').addClass('js');
             }, 1000);
+        } else {
+            buildRoot();
         }
     });
 
