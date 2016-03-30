@@ -221,13 +221,30 @@ exports.specification = idStep(SpecificationCtx, "specifications");
 function UserCtx (ctx) {
     Ctx.call(this, ctx);
 }
-subSteps(UserCtx, ["affiliations", "groups", "specifications"]);
+subSteps(UserCtx, ["affiliations", "groups", "participations", "specifications"]);
 
 // w3c.user("ivpki36ou94oo08osswccs80gcwogwk").fetch()
 // w3c.user("ivpki36ou94oo08osswccs80gcwogwk").affiliations().fetch()
 // w3c.user("ivpki36ou94oo08osswccs80gcwogwk").groups().fetch()
 // w3c.user("ivpki36ou94oo08osswccs80gcwogwk").specifications().fetch()
 exports.user = idStep(UserCtx, "users");
+
+// Affiliations:
+
+exports.affiliations = rootList('affiliations');
+function AffiliationCtx (ctx) {
+    Ctx.call(this, ctx);
+}
+subSteps(AffiliationCtx, ['participants', 'participations']);
+exports.affiliation = idStep(AffiliationCtx, 'affiliations');
+
+// Participations:
+
+function ParticipationCtx (ctx) {
+    Ctx.call(this, ctx);
+}
+subSteps(ParticipationCtx, ['participants']);
+exports.participation = idStep(ParticipationCtx, 'participations');
 
 },{"async":2,"superagent":7,"util":9}],2:[function(require,module,exports){
 (function (process,global){
