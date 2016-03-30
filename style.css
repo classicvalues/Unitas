@@ -80,6 +80,19 @@ article h2 {
     text-transform: capitalize;
 }
 
+section.fields {
+    padding: 1em 2em;
+    background-color: #f0f0f0;
+}
+
+section.fields strong {
+    text-transform: capitalize;
+}
+
+section.fields p {
+    margin: 0;
+}
+
 footer {
     clear: both;
 }
@@ -94,4 +107,12 @@ footer {
 
 html.js .temp {
     visibility: visible;
+}
+
+span.yes {
+    color: #00c000;
+}
+
+span.no {
+    color: #c00000;
 }

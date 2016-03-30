@@ -1,6 +1,8 @@
 'use strict';
 
 const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
+    REGEX_URI = /^https?:\/\/(www\.)?((.+)[^\ \/])\/?$/i,
+    REGEX_DATE = /^[\d\-\/\.\ ]{8,10}$/i,
     MODE = 'param',
     TYPE_W3C = 'w3c',
     TYPE_DOMAIN = 'domain',
@@ -17,7 +19,7 @@ const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     SECTIONS_CHARTER = [],
     SECTIONS_SPEC = [/* 'superseded', 'supersedes', */ 'versions' /*, 'latest' */],
     SECTIONS_VERSION = ['deliverers', 'editors', 'successors', 'predecessors'],
-    SECTIONS_USER = ['affiliations', 'groups', /* 'participations', */ 'specifications'],
+    SECTIONS_USER = ['affiliations', 'groups', 'participations', 'specifications'],
     SECTIONS_SERVICE = ['groups'],
     SECTIONS_PARTICIPATION = ['participants'],
     SECTIONS_AFFILIATION = ['participants', 'participations'],
@@ -31,6 +33,46 @@ const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
         'service': SECTIONS_SERVICE,
         'participation': SECTIONS_PARTICIPATION,
         'affiliation': SECTIONS_AFFILIATION,
+    },
+    FIELDS_DOMAIN = ['is-closed', 'staging'],
+    FIELDS_GROUP = ['type', 'description', 'start-date', 'end-date', 'is-closed', 'staging', 'participation-as-public-ie-allowed', 'is-on-rec-track'],
+    FIELDS_CHARTER = ['start', 'initial-end', 'end', 'uri', 'cfp-uri', 'required-new-commitments'],
+    FIELDS_SPEC = ['shortname', 'description', 'shortlink'],
+    FIELDS_VERSION = ['status', 'uri', 'date', 'informative', 'shortlinke', 'editor-draft', 'process-rules'],
+    FIELDS_USER = ['given', 'family', 'work-title'],
+    FIELDS_SERVICE = ['type', 'link', 'external', 'closed'],
+    FIELDS_PARTICIPATION = ['individual', 'created'],
+    FIELDS_AFFILIATION = ['is-member'],
+    FIELDS = {
+        'domain': FIELDS_DOMAIN,
+        'group': FIELDS_GROUP,
+        'charter': FIELDS_CHARTER,
+        'spec': FIELDS_SPEC,
+        'version': FIELDS_VERSION,
+        'user': FIELDS_USER,
+        'service': FIELDS_SERVICE,
+        'participation': FIELDS_PARTICIPATION,
+        'affiliation': FIELDS_AFFILIATION,
+    },
+    DEEPFIELDS_DOMAIN = ['homepage', 'lead'],
+    DEEPFIELDS_GROUP = ['domain', 'active-charter', 'homepage', 'join', 'pp-status'],
+    DEEPFIELDS_CHARTER = ['group', 'next-charter', 'previous-charter'],
+    DEEPFIELDS_SPEC = ['first-version', 'latest-version'],
+    DEEPFIELDS_VERSION = ['specification'],
+    DEEPFIELDS_USER = ['photos'],
+    DEEPFIELDS_SERVICE = [],
+    DEEPFIELDS_PARTICIPATION = ['group', 'organization', 'user'],
+    DEEPFIELDS_AFFILIATION = ['homepage'],
+    DEEPFIELDS = {
+        'domain': DEEPFIELDS_DOMAIN,
+        'group': DEEPFIELDS_GROUP,
+        'charter': DEEPFIELDS_CHARTER,
+        'spec': DEEPFIELDS_SPEC,
+        'version': DEEPFIELDS_VERSION,
+        'user': DEEPFIELDS_USER,
+        'service': DEEPFIELDS_SERVICE,
+        'participation': DEEPFIELDS_PARTICIPATION,
+        'affiliation': DEEPFIELDS_AFFILIATION,
     };
 
 var type,
@@ -54,7 +96,6 @@ var type,
 
 const normaliseURI = function(uri) {
 
-    const REGEX_URI = /https?:\/\/(www\.)?((.+)[^\ \/])\/?$/i;
     var result = uri.trim().toLowerCase();
     const matches = REGEX_URI.exec(result);
 
@@ -162,6 +203,7 @@ const buildLink = function(href) {
     if (match && match.length > 1) return 'entity.html?p=' + match[1];
     match = REGEX_AFFILIATIONS.exec(href);
     if (match && match.length > 1) return 'entity.html?a=' + match[1];
+    return href;
 };
 
 /**
@@ -188,7 +230,7 @@ const init = function($, api) {
         const renderItem = function(item) {
             if (!item)
                 return window.alert('Error: tried to render an undefined item.')
-            if (item.href && item.title)
+            else if (item.href && item.title)
                 return '<li><a href="' + buildLink(item.href) + '">' + item.title + '</a></li>\n';
             else if (item.href)
                 return '<li><a href="' + buildLink(item.href) + '">[Item]</a></li>\n';
@@ -196,16 +238,45 @@ const init = function($, api) {
                 return '<li>[Type of item not supported yet]</li>\n';
         };
 
+        const renderField = function(key, value, label) {
+            if (undefined === key || undefined === value)
+                return window.alert('Error: tried to render an undefined field.')
+            else if ('boolean' === typeof value)
+                return '<p><strong>' + key + '</strong>: <span class="' +
+                    (value ? 'yes">&#10003;' : 'no">&#10007;') +
+                    '</span></p>\n';
+            else if (REGEX_URI.test(value)) {
+                if (label)
+                    return '<p><strong>' + key + '</strong>: <a href="' + buildLink(value) + '">' + label + '</a></p>\n';
+                else if (value === buildLink(value))
+                    return '<p><strong>' + key + '</strong>: <a href="' + value + '"><code>' + normaliseURI(value) + '</code></a></p>\n';
+                else
+                    return '<p><strong>' + key + '</strong>: <a href="' + buildLink(value) + '">see</a></p>\n';
+            } else if (REGEX_DATE.test(value))
+                return '<p><strong>' + key + '</strong>: ' + value + '</p>\n';
+            else if ('string' === typeof value)
+                return '<p><strong>' + key + '</strong>: <em>' + value + '</em></p>\n';
+            else
+                return '<p><strong>' + key + '</strong>: [Type of field not supported yet]</p>\n';
+        };
+
+        const renderPhoto = function(photos) {
+            for (var p of photos)
+                if ('thumbnail' === p.name)
+                    return '<p><img src="' + p.href + '" alt="Portrait of the user" /></p>\n';
+        };
+
         const buildHandler = function(s) {
             return function(error, data) {
                 if (error) {
-                    window.alert('Error: "' + error + '""');
+                    // window.alert('Error: "' + error + '"');
                 } else {
                     console.dir(data);
                     var section = '<h2 id="' + s + '">' + s + '</h2>\n' +
                         '<ul>\n';
                     for(var i of data)
-                        section += renderItem(i);
+                        if (undefined !== i)
+                            section += renderItem(i);
                     section += '</ul>\n';
                     article.append(section);
                 }
@@ -217,6 +288,24 @@ const init = function($, api) {
             for(var i of list)
                 section += renderItem(i);
             section += '</ul>\n';
+            article.append(section);
+        };
+
+        const buildFields = function(data) {
+            var fields = FIELDS[type],
+                f;
+            var section = '<section class="fields">\n';
+            for(f of fields)
+                if (undefined !== data[f])
+                    section += renderField(f, data[f])
+            fields = DEEPFIELDS[type];
+            for(f of fields) {
+                if ('photos' === f)
+                    section += renderPhoto(data['_links'].photos)
+                else if (undefined !== data['_links'] && undefined !== data['_links'][f])
+                    section += renderField(f, data['_links'][f].href, data['_links'][f].title)
+            }
+            section += '<section>\n';
             article.append(section);
         };
 
@@ -277,6 +366,7 @@ const init = function($, api) {
                     else if (data.created) name = data.created;
                     index.html(buildIndex());
                     fetchSections();
+                    buildFields(data);
                 }
                 title.html(title.html() + ' &mdash; ' + name);
                 h1.html('<a href="#">' + name + '</a>');
