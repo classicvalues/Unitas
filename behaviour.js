@@ -368,7 +368,7 @@ const init = function($, api) {
                     fetchSections();
                     buildFields(data);
                 }
-                title.html(title.html() + ' &mdash; ' + name);
+                title.html(title.text() + ' &mdash; ' + $(name).text());
                 h1.html('<a href="#">' + name + '</a>');
             }
         };
