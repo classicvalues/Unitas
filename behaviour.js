@@ -361,6 +361,7 @@ const init = function($, api) {
                 }
                 for(var s in sections) {
                     thisSec = sections[s];
+                    updateProgress(1);
                     func(id)[thisSec]().fetch(OPTS, buildHandler(thisSec));
                 }
             }
