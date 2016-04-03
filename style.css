@@ -41,6 +41,28 @@ header > a:hover, header > h1:hover {
     opacity: 1;
 }
 
+#progress-bar {
+    box-sizing: border-box;
+    padding: .1em;
+    display: none;
+    width: 25%;
+    height: 100%;
+    border: 1em solid #2975ac;
+    float: right;
+    background-color: #ffffff;
+    opacity: 1;
+}
+
+#progress-bar.visible {
+    display: inline;
+}
+
+#progress-bar div {
+    transition: width .25s linear;
+    height: 100%;
+    background-color: #2975ac;
+}
+
 footer {
     font-size: smaller;
 }

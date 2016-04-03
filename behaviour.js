@@ -82,9 +82,13 @@ var type,
     title,
     head,
     h1,
+    bar,
+    innerBar,
     nav,
     index,
-    article;
+    article,
+    total = 0,
+    pending = 0;
 
 /**
  * Reduce a URI to its minimum expression, for easier comparison.
@@ -229,6 +233,20 @@ const init = function($, api) {
         article.append(section);
     };
 
+    const updateProgress = function(delta) {
+        pending += delta;
+        if (delta > 0)
+            total += delta;
+        innerBar.css('width', ((total - pending) * 100 / total) + '%');
+        if (pending > 0)
+            bar.addClass('visible');
+        else
+            window.setTimeout(function() {
+                bar.removeClass('visible');
+            }, 500);
+
+    };
+
     const retrieveEntity = function() {
 
         const renderItem = function(item) {
@@ -284,6 +302,7 @@ const init = function($, api) {
                     section += '</ul>\n';
                     article.append(section);
                 }
+                updateProgress(-1);
             };
         };
 
@@ -319,6 +338,7 @@ const init = function($, api) {
             if (TYPE_VERSION === type) {
                 for(var s in sections) {
                     thisSec = sections[s];
+                    updateProgress(1);
                     api.specification(id.s).version(id.v)[thisSec]().fetch(buildHandler(thisSec));
                 }
             } else {
@@ -341,6 +361,7 @@ const init = function($, api) {
                 }
                 for(var s in sections) {
                     thisSec = sections[s];
+                    updateProgress(1);
                     func(id)[thisSec]().fetch(OPTS, buildHandler(thisSec));
                 }
             }
@@ -376,35 +397,44 @@ const init = function($, api) {
                 title.html(title.text() + ' &mdash; ' + $(name).text());
                 h1.html('<a href="#">' + name + '</a>');
             }
+            updateProgress(-1);
         };
 
         if (TYPE_DOMAIN === type) {
+            updateProgress(1);
             if (id)
                 api.domain(id).fetch(OPTS, processEntity);
             else
                 api.domains().fetch(OPTS, processEntity);
         } else if (TYPE_GROUP === type) {
+            updateProgress(1);
             if (id)
                 api.group(id).fetch(OPTS, processEntity);
             else
                 api.groups().fetch(OPTS, processEntity);
         } else if (TYPE_CHARTER === type) {
+            updateProgress(1);
             api.group(id.g).charter(id.c).fetch(OPTS, processEntity);
         } else if (TYPE_SPEC === type) {
+            updateProgress(1);
             if (id)
                 api.specification(id).fetch(OPTS, processEntity);
             else
                 api.specifications().fetch(OPTS, processEntity);
         } else if (TYPE_VERSION === type) {
+            updateProgress(1);
             api.specification(id.s).version(id.v).fetch(OPTS, processEntity);
-            api.domain(id).fetch(OPTS, OHprocessEntity);
         } else if (TYPE_USER === type) {
+            updateProgress(1);
             api.user(id).fetch(OPTS, processEntity);
         } else if (TYPE_SERVICE === type) {
+            updateProgress(1);
             api.service(id).fetch(OPTS, processEntity);
         } else if (TYPE_PARTICIPATION === type) {
+            updateProgress(1);
             api.participation(id).fetch(OPTS, processEntity);
         } else if (TYPE_AFFILIATION === type) {
+            updateProgress(1);
             if (id)
                 api.affiliation(id).fetch(OPTS, processEntity);
             else
@@ -416,6 +446,8 @@ const init = function($, api) {
         title = $('head title');
         head = $('header');
         h1 = $('header h1');
+        bar = $('#progress-bar');
+        innerBar = $('div', bar);
         nav = $('nav');
         index = $('#index');
         article = $('article');
