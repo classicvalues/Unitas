@@ -1,6 +1,8 @@
 'use strict';
 
 const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
+    DEBUG = false,
+    OPTS = {},    // {embed: true},
     REGEX_URI = /^https?:\/\/(www\.)?((.+)[^\ \/])\/?$/i,
     REGEX_DATE = /^[\d\-\/\.\ ]{8,10}$/i,
     MODE = 'param',
@@ -215,6 +217,8 @@ const buildLink = function(href) {
 
 const init = function($, api) {
 
+    $('html').removeClass('no-js').addClass('js');
+
     const buildRoot = function() {
         const section = '<ul>\n' +
             '<li><a href="entity.html?d=all">All domains</a></li>\n' +
@@ -271,7 +275,7 @@ const init = function($, api) {
                 if (error) {
                     // window.alert('Error: "' + error + '"');
                 } else {
-                    console.dir(data);
+                    if (DEBUG) console.dir(data);
                     var section = '<h2 id="' + s + '">' + s + '</h2>\n' +
                         '<ul>\n';
                     for(var i of data)
@@ -337,7 +341,7 @@ const init = function($, api) {
                 }
                 for(var s in sections) {
                     thisSec = sections[s];
-                    func(id)[thisSec]().fetch(buildHandler(thisSec));
+                    func(id)[thisSec]().fetch(OPTS, buildHandler(thisSec));
                 }
             }
         };
@@ -346,6 +350,7 @@ const init = function($, api) {
             if (error) {
                 window.alert('Error: "' + error + '""');
             } else {
+                if (DEBUG) console.dir(data);
                 var name = '[Item]';
                 if (undefined === id) {
                     name = 'All ';
@@ -375,34 +380,35 @@ const init = function($, api) {
 
         if (TYPE_DOMAIN === type) {
             if (id)
-                api.domain(id).fetch(processEntity);
+                api.domain(id).fetch(OPTS, processEntity);
             else
-                api.domains().fetch(processEntity);
+                api.domains().fetch(OPTS, processEntity);
         } else if (TYPE_GROUP === type) {
             if (id)
-                api.group(id).fetch(processEntity);
+                api.group(id).fetch(OPTS, processEntity);
             else
-                api.groups().fetch(processEntity);
+                api.groups().fetch(OPTS, processEntity);
         } else if (TYPE_CHARTER === type) {
-            api.group(id.g).charter(id.c).fetch(processEntity);
+            api.group(id.g).charter(id.c).fetch(OPTS, processEntity);
         } else if (TYPE_SPEC === type) {
             if (id)
-                api.specification(id).fetch(processEntity);
+                api.specification(id).fetch(OPTS, processEntity);
             else
-                api.specifications().fetch(processEntity);
+                api.specifications().fetch(OPTS, processEntity);
         } else if (TYPE_VERSION === type) {
-            api.specification(id.s).version(id.v).fetch(processEntity);
+            api.specification(id.s).version(id.v).fetch(OPTS, processEntity);
+            api.domain(id).fetch(OPTS, OHprocessEntity);
         } else if (TYPE_USER === type) {
-            api.user(id).fetch(processEntity);
+            api.user(id).fetch(OPTS, processEntity);
         } else if (TYPE_SERVICE === type) {
-            api.service(id).fetch(processEntity);
+            api.service(id).fetch(OPTS, processEntity);
         } else if (TYPE_PARTICIPATION === type) {
-            api.participation(id).fetch(processEntity);
+            api.participation(id).fetch(OPTS, processEntity);
         } else if (TYPE_AFFILIATION === type) {
             if (id)
-                api.affiliation(id).fetch(processEntity);
+                api.affiliation(id).fetch(OPTS, processEntity);
             else
-                api.affiliations().fetch(processEntity);
+                api.affiliations().fetch(OPTS, processEntity);
         }
     };
 
@@ -417,9 +423,6 @@ const init = function($, api) {
             api.apiKey = API_KEY;
             api.authMode = MODE;
             retrieveEntity();
-            setTimeout(function() {
-                $('html').removeClass('no-js').addClass('js');
-            }, 1000);
         } else {
             buildRoot();
         }
@@ -431,7 +434,7 @@ const init = function($, api) {
 requirejs.config({
     paths: {
         jquery: 'https://www.w3.org/scripts/jquery/2.1/jquery.min',
-        w3capi: 'w3capi'
+        w3capi: 'https://w3c.github.io/node-w3capi/lib/w3capi'
     }
 });
 
