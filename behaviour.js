@@ -250,11 +250,9 @@ const init = function(api) {
          */
 
         const listEntities = function(list) {
-            var section = '<ul>\n';
+            const aboutSection = $('#about .panel-body');
             for(var i of list)
-                section += renderItem(i);
-            section += '</ul>\n';
-            article.append(section);
+                aboutSection.append(renderItem(i));
         };
 
         /**
@@ -447,7 +445,7 @@ const init = function(api) {
         index = $('#index');
         article = $('article');
         if (processURL()) {
-            if (TYPE_GROUP === type) {
+            if (TYPE_GROUP === type && undefined !== id) {
                 $('#dashboard').show();
                 $('li a[href="#dashboard"]').css('display', 'block');
             }

@@ -29,8 +29,8 @@ const abbreviateGroupName = function(name) {
         REGEX_IG = /interest\s+group$/i,
         REGEX_WG = /working\s+group$/i,
         ABBR_BG = '<abbr title="Business Group">BG</abbr>',
-        ABBR_CG = '<abbr title="Community Group">IG</abbr>',
-        ABBR_IG = '<abbr title="Interest Group">CG</abbr>',
+        ABBR_CG = '<abbr title="Community Group">CG</abbr>',
+        ABBR_IG = '<abbr title="Interest Group">IG</abbr>',
         ABBR_WG = '<abbr title="Working Group">WG</abbr>';
     var result = name.replace(REGEX_BG, ABBR_BG);
     result = result.replace(REGEX_CG, ABBR_CG);
