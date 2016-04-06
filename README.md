@@ -4,9 +4,9 @@ Prototypes for the &ldquo;dynamic pages&rdquo; project.
 
 ## Examples
 
-### Root view
+<!-- ### Root view
 
-* With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unitas/)
+* With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unitas/) -->
 
 ### Lists of entities that are &ldquo;listable&rdquo;
 
@@ -17,15 +17,15 @@ Prototypes for the &ldquo;dynamic pages&rdquo; project.
 
 ### Examples of particular Entities
 
-* A domain: [`/?d=`](https://w3c.github.io/Unitas/?d=41381)
-* A group: [`/?d=`](https://w3c.github.io/Unitas/?g=68239)
-* A charter: [`/?d=`](https://w3c.github.io/Unitas/?g=46300&c=155)
-* A spec: [`/?d=`](https://w3c.github.io/Unitas/?s=dwbp)
-* A version: [`/?d=`](https://w3c.github.io/Unitas/?s=2dcontext&v=20110525)
-* A user: [`/?d=`](https://w3c.github.io/Unitas/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8)
-* A service: [`/?d=`](https://w3c.github.io/Unitas/?x=1913)
-* A participation: [`/?d=`](https://w3c.github.io/Unitas/?p=1503)
-* An affiliation: [`/?d=`](https://w3c.github.io/Unitas/?a=52794)
+* A domain: [`/?d=41381`](https://w3c.github.io/Unitas/?d=41381)
+* A group: [`/?g=68239`](https://w3c.github.io/Unitas/?g=68239)
+* A charter: [`/?g=46300&c=155`](https://w3c.github.io/Unitas/?g=46300&c=155)
+* A spec: [`/?s=dwbp`](https://w3c.github.io/Unitas/?s=dwbp)
+* A version: [`/?s=2dcontext&v=20110525`](https://w3c.github.io/Unitas/?s=2dcontext&v=20110525)
+* A user: [`/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8`](https://w3c.github.io/Unitas/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8)
+* A service: [`/?x=1913`](https://w3c.github.io/Unitas/?x=1913)
+* A participation: [`/?p=1503`](https://w3c.github.io/Unitas/?p=1503)
+* An affiliation: [`/?a=52794`](https://w3c.github.io/Unitas/?a=52794)
 
 ## Contributing
 
