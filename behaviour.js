@@ -79,11 +79,12 @@ const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
 
 var type,
     id,
+    html,
+    body,
     title,
-    head,
-    h1,
     bar,
     innerBar,
+    percent,
     nav,
     index,
     article,
@@ -91,174 +92,95 @@ var type,
     pending = 0;
 
 /**
- * Reduce a URI to its minimum expression, for easier comparison.
- *
- * This works heuristically; it strips a URI of the usual variants and converts it to lowercase.
- * Some chunks that are removed are: protocol, "www." at the beginning, "/" at the end.
- *
- * @param {String} uri - Original URI.
- * @returns {String} The "normalised", (probably) equivalent URI.
- */
-
-const normaliseURI = function(uri) {
-
-    var result = uri.trim().toLowerCase();
-    const matches = REGEX_URI.exec(result);
-
-    if (matches && matches.length > 2) {
-        result = matches[2];
-    }
-
-    return result;
-
-};
-
-const getUrlVars = function() {
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('#')[0];
-        hash = hash.split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-};
-
-const processURL = function() {
-    const params = getUrlVars();
-    if(params.d) {
-        type = TYPE_DOMAIN;
-        id = ('all' !== params.d) ? params.d : undefined;
-    } else if(params.c) {
-        if (params.g) {
-            type = TYPE_CHARTER;
-            id = {g: params.g, c: params.c};
-        } else {
-            window.alert('Error: to retrieve a charter, the ID of the group is needed too.')
-            return false;
-        }
-    } else if(params.g) {
-        type = TYPE_GROUP;
-        id = ('all' !== params.g) ? params.g : undefined;
-    } else if(params.v) {
-        if (params.s) {
-            type = TYPE_VERSION;
-            id = {s: params.s, v: params.v};
-        } else {
-            window.alert('Error: to retrieve a version, the shortname of the spec is needed too.')
-            return false;
-        }
-    } else if(params.s) {
-        type = TYPE_SPEC;
-        id = ('all' !== params.s) ? params.s : undefined;
-    } else if(params.u) {
-        type = TYPE_USER;
-        id = params.u;
-    } else if(params.x) {
-        type = TYPE_SERVICE;
-        id = params.x;
-    } else if(params.p) {
-        type = TYPE_PARTICIPATION;
-        id = params.p;
-    } else if(params.a) {
-        type = TYPE_AFFILIATION;
-        id = ('all' !== params.a) ? params.a : undefined;
-    } else {
-        type = TYPE_W3C;
-        return false;
-    }
-    console.log('type: ' + type + '; id: ' + id);
-    return true;
-};
-
-const buildIndex = function() {
-    const sections = SECTIONS[type];
-    var result = '';
-    for(var s in sections) {
-        result += '<li><a href="#' + sections[s] + '">' + sections[s] + '</a></li>\n';
-    }
-    return result;
-};
-
-const buildLink = function(href) {
-    const REGEX_DOMAIN = /\/domains\/(\d+)$/i,
-        REGEX_GROUP = /\/groups\/(\d+)$/i,
-        REGEX_CHARTER = /\/groups\/(\d+)\/charters\/(\d+)$/i,
-        REGEX_SPEC = /\/specifications\/([^\/]+)$/i,
-        REGEX_VERSION = /\/specifications\/(.+)\/versions\/(\d+)$/i,
-        REGEX_USER = /\/users\/([a-zA-z\d]+)$/i,
-        REGEX_SERVICE = /\/services\/(\d+)$/i,
-        REGEX_PARTICIPATIONS = /\/participations\/(\d+)$/i,
-        REGEX_AFFILIATIONS = /\/affiliations\/(\d+)$/i;
-    var match = REGEX_DOMAIN.exec(href);
-    if (match && match.length > 1) return 'entity.html?d=' + match[1];
-    match = REGEX_GROUP.exec(href);
-    if (match && match.length > 1) return 'entity.html?g=' + match[1];
-    match = REGEX_CHARTER.exec(href);
-    if (match && match.length > 2) return 'entity.html?g=' + match[1] + '&c=' + match[2];
-    match = REGEX_SPEC.exec(href);
-    if (match && match.length > 1) return 'entity.html?s=' + match[1];
-    match = REGEX_VERSION.exec(href);
-    if (match && match.length > 2) return 'entity.html?s=' + match[1] + '&v=' + match[2];
-    match = REGEX_USER.exec(href);
-    if (match && match.length > 1) return 'entity.html?u=' + match[1];
-    match = REGEX_SERVICE.exec(href);
-    if (match && match.length > 1) return 'entity.html?x=' + match[1];
-    match = REGEX_PARTICIPATIONS.exec(href);
-    if (match && match.length > 1) return 'entity.html?p=' + match[1];
-    match = REGEX_AFFILIATIONS.exec(href);
-    if (match && match.length > 1) return 'entity.html?a=' + match[1];
-    return href;
-};
-
-/**
  * Set up the page.
  *
- * @param {Function} $ the jQuery object.
  * @param {Object} api an object to access the W3C API.
  */
 
-const init = function($, api) {
+const init = function(api) {
 
     $('html').removeClass('no-js').addClass('js');
 
+    /**
+     * Respond to vertical scrolling
+     */
+
+    const handleScroll = function(event) {
+        html.toggleClass('scrolled', body[0].scrollTop > 0);
+        if (body[0].scrollTop > 74)
+            title.fadeIn();
+        else
+            title.fadeOut();
+    };
+
+    /**
+     * Switch between toggle and narrow modes.
+     */
+
+    const toggleWidth = function(event) {
+        $('.container, .container-fluid')
+            .toggleClass('container-fluid', event.target.checked)
+            .toggleClass('container', !event.target.checked);
+    };
+
+    /**
+     * @TODO
+     */
+
     const buildRoot = function() {
         const section = '<ul>\n' +
-            '<li><a href="entity.html?d=all">All domains</a></li>\n' +
-            '<li><a href="entity.html?g=all">All groups</a></li>\n' +
-            '<li><a href="entity.html?s=all">All specifications</a></li>\n' +
-            '<li><a href="entity.html?a=all">All affiliations</a></li>\n' +
+            '<li><a href="?d=all">All domains</a></li>\n' +
+            '<li><a href="?g=all">All groups</a></li>\n' +
+            '<li><a href="?s=all">All specifications</a></li>\n' +
+            '<li><a href="?a=all">All affiliations</a></li>\n' +
             '</ul>\n';
         article.append(section);
     };
+
+    /**
+     * @TODO
+     */
 
     const updateProgress = function(delta) {
         pending += delta;
         if (delta > 0)
             total += delta;
-        innerBar.css('width', ((total - pending) * 100 / total) + '%');
-        if (pending > 0)
-            bar.addClass('visible');
-        else
+        const value = (total - pending) * 100 / total;
+        innerBar.css('width', value + '%');
+        percent.text(parseInt(value) + '%');
+        if (pending < 1) {
+            attachHandlers();
             window.setTimeout(function() {
-                bar.removeClass('visible');
+                body.addClass('loaded');
             }, 500);
-
+        }
     };
 
+    /**
+     * @TODO
+     */
+
     const retrieveEntity = function() {
+
+        /**
+         * @TODO
+         */
 
         const renderItem = function(item) {
             if (!item)
                 return window.alert('Error: tried to render an undefined item.')
             else if (item.href && item.title)
-                return '<li><a href="' + buildLink(item.href) + '">' + item.title + '</a></li>\n';
+                return '<li class="list-group-item"><a href="' + buildLink(item.href) +
+                    '" title="' + item.title + '">' + item.title + '</a></li>\n';
             else if (item.href)
-                return '<li><a href="' + buildLink(item.href) + '">[Item]</a></li>\n';
+                return '<li class="list-group-item"><a href="' + buildLink(item.href) + '">[Item]</a></li>\n';
             else
-                return '<li>[Type of item not supported yet]</li>\n';
+                return '<li class="list-group-item">[Type of item not supported yet]</li>\n';
         };
+
+        /**
+         * @TODO
+         */
 
         const renderField = function(key, value, label) {
             if (undefined === key || undefined === value)
@@ -282,29 +204,50 @@ const init = function($, api) {
                 return '<p><strong>' + key + '</strong>: [Type of field not supported yet]</p>\n';
         };
 
+        /**
+         * @TODO
+         */
+
         const renderPhoto = function(photos) {
-            for (var p of photos)
-                if ('thumbnail' === p.name)
-                    return '<p><img src="' + p.href + '" alt="Portrait of the user" /></p>\n';
+            if (photos) {
+                for (var p of photos)
+                    if ('thumbnail' === p.name)
+                        return '<p class="pull-right"><img src="' + p.href + '" alt="Portrait of the user"></p>\n';
+            } else {
+                // return window.alert('Error: this user has no photos.')
+            }
         };
 
-        const buildHandler = function(s) {
+        /**
+         * @TODO
+         */
+
+        const buildAPIHandler = function(s) {
             return function(error, data) {
                 if (error) {
                     // window.alert('Error: "' + error + '"');
                 } else {
                     if (DEBUG) console.dir(data);
-                    var section = '<h2 id="' + s + '">' + s + '</h2>\n' +
-                        '<ul>\n';
+                    var widget = $('#sample-widget').clone(),
+                        item;
+                    widget.attr('id', s).removeClass('sample');
+                    $('h3', widget).contents()[0].textContent = s + ' ';
+                    $('h3 span.count', widget).text(data.length);
+                    $('h3 a', widget).attr('href', '#' + s);
                     for(var i of data)
-                        if (undefined !== i)
-                            section += renderItem(i);
-                    section += '</ul>\n';
-                    article.append(section);
+                        if (undefined !== i) {
+                            item = $(renderItem(i));
+                            $('.list-group', widget).append(item);
+                        }
+                    $('#details').append(widget);
                 }
                 updateProgress(-1);
             };
         };
+
+        /**
+         * @TODO
+         */
 
         const listEntities = function(list) {
             var section = '<ul>\n';
@@ -314,23 +257,31 @@ const init = function($, api) {
             article.append(section);
         };
 
+        /**
+         * @TODO
+         */
+
         const buildFields = function(data) {
+            const aboutSection = $('#about .panel-body');
             var fields = FIELDS[type],
                 f;
-            var section = '<section class="fields">\n';
             for(f of fields)
                 if (undefined !== data[f])
-                    section += renderField(f, data[f])
+                    aboutSection.append(renderField(f, data[f]));
             fields = DEEPFIELDS[type];
             for(f of fields) {
-                if ('photos' === f)
-                    section += renderPhoto(data['_links'].photos)
-                else if (undefined !== data['_links'] && undefined !== data['_links'][f])
-                    section += renderField(f, data['_links'][f].href, data['_links'][f].title)
+                if ('photos' === f) {
+                    const photoSection = renderPhoto(data['_links'].photos);
+                    if (photoSection)
+                        aboutSection.append(photoSection);
+                } else if (undefined !== data['_links'] && undefined !== data['_links'][f])
+                    aboutSection.append(renderField(f, data['_links'][f].href, data['_links'][f].title));
             }
-            section += '<section>\n';
-            article.append(section);
         };
+
+        /**
+         * @TODO
+         */
 
         const fetchSections = function() {
             const sections = SECTIONS[type];
@@ -339,7 +290,7 @@ const init = function($, api) {
                 for(var s in sections) {
                     thisSec = sections[s];
                     updateProgress(1);
-                    api.specification(id.s).version(id.v)[thisSec]().fetch(buildHandler(thisSec));
+                    api.specification(id.s).version(id.v)[thisSec]().fetch(OPTS, buildAPIHandler(thisSec));
                 }
             } else {
                 if (TYPE_DOMAIN === type) {
@@ -362,10 +313,14 @@ const init = function($, api) {
                 for(var s in sections) {
                     thisSec = sections[s];
                     updateProgress(1);
-                    func(id)[thisSec]().fetch(OPTS, buildHandler(thisSec));
+                    func(id)[thisSec]().fetch(OPTS, buildAPIHandler(thisSec));
                 }
             }
         };
+
+        /**
+         * @TODO
+         */
 
         const processEntity = function(error, data) {
             if (error) {
@@ -390,12 +345,16 @@ const init = function($, api) {
                     else if (data.link) name = '<code>' + normaliseURI(data.link) + '</code>';
                     else if (data.uri) name = '<code>' + normaliseURI(data.uri) + '</code>';
                     else if (data.created) name = data.created;
+                    name = abbreviateGroupName(name);
                     index.html(buildIndex());
                     fetchSections();
                     buildFields(data);
                 }
-                title.html(title.text() + ' &mdash; ' + $(name).text());
-                h1.html('<a href="#">' + name + '</a>');
+                const headTitle = $('head title');
+                headTitle.html(headTitle.text() + ' &middot; ' + $('<span>' + name + '</span>').text());
+                title.removeClass('loading').filter('a').html(name);
+                $('h1').removeClass('loading')
+                $('h1 a').html(name);
             }
             updateProgress(-1);
         };
@@ -442,16 +401,56 @@ const init = function($, api) {
         }
     };
 
+    /**
+     * @TODO
+     */
+
+    const collapseNavBar = function() {
+        $('.navbar-collapse').collapse('hide');
+    };
+
+    /**
+     * @TODO
+     */
+
+    const showNotImplemented = function() {
+        if (event && event.target &&
+            'permalink' !== event.target.className && 'span' !== event.target.tagName.toLowerCase() &&
+            (!event.which || 1 === event.which)) {
+            $('#not-implemented').modal('show');
+        }
+    };
+
+    /**
+     * @TODO
+     */
+
+    const attachHandlers = function() {
+        $('#optionWide').change(buildHandler(toggleWidth));
+        $(document).scroll(handleScroll);
+        $('.navbar-nav').click(collapseNavBar);
+        $('.panel-heading').mousedown(showNotImplemented);
+    };
+
+    /**
+     * @TODO
+     */
+
     $(document).ready(function() {
-        title = $('head title');
-        head = $('header');
-        h1 = $('header h1');
-        bar = $('#progress-bar');
-        innerBar = $('div', bar);
+        html = $('html');
+        body = $('body');
+        title = $('#title');
+        bar = $('#progress-container');
+        innerBar = $('#progress-bar');
+        percent = $('#progress-value');
         nav = $('nav');
         index = $('#index');
         article = $('article');
         if (processURL()) {
+            if (TYPE_GROUP === type) {
+                $('#dashboard').show();
+                $('li a[href="#dashboard"]').css('display', 'block');
+            }
             api.apiKey = API_KEY;
             api.authMode = MODE;
             retrieveEntity();
@@ -465,10 +464,19 @@ const init = function($, api) {
 // Set up RequireJS:
 requirejs.config({
     paths: {
-        jquery: 'https://www.w3.org/scripts/jquery/2.1/jquery.min',
-        w3capi: 'https://w3c.github.io/node-w3capi/lib/w3capi'
+        w3capi: 'https://w3c.github.io/node-w3capi/lib/w3capi',
+        // @TODO: switch to minified jQuery in production:
+        // jquery: 'https://code.jquery.com/jquery-2.2.3.min',
+        jquery: 'https://code.jquery.com/jquery-2.2.3',
+        // @TODO: switch to minified Bootstrap JS in production:
+        // bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min',
+        bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap',
+        utils: 'utils'
+    },
+    shim: {
+        'bootstrap': ['jquery']
     }
 });
 
 // Load dependencies asynchronously via RequireJS:
-requirejs(['jquery', 'w3capi'], init);
+requirejs(['w3capi', 'jquery', 'bootstrap', 'utils'], init);

@@ -1,4 +1,403 @@
+/************************************** Body */
+
 body {
+    padding-top: 50px;
+    line-height: 1.5;
+}
+
+/************************************** Some generic tweaks */
+
+code {
+    background-color: inherit;
+    color: inherit;
+}
+
+.panel {
+    border-radius: 0;
+}
+
+.sample {
+    visibility: hidden;
+    display: none;
+}
+
+.loading {
+    opacity: .3333;
+}
+
+.yes {
+    color: #00c000;
+}
+
+.no {
+    color: #c00000;
+}
+
+#about p {
+    margin: 0;
+}
+
+/************************************** Overlay */
+
+/* Structure:
+   .navbar
+       .navbar-header
+           .navbar-toggle
+           .navbar-brand
+               img
+               #title
+        #toc.navbar-collapse
+            .navbar-nav
+            .navbar-link */
+
+/* .navbar and generic stuff */
+
+.navbar {
+    /*height: 50px;*/
+    border: none;
+    background-color: #1a5e9a;
+}
+
+body.loaded .navbar {
+    box-shadow: 0 16px 16px #ffffff;
+}
+
+.navbar,
+.navbar a {
+    color: #e0e0e0;
+}
+
+.navbar a:hover,
+.navbar a:active,
+.navbar a:focus {
+    text-decoration: underline;
+    color: #ffffff;
+}
+
+/* .navbar-header */
+
+/* .navbar-toggle */
+
+.navbar-inverse .navbar-toggle:hover {
+    background-color: inherit;
+}
+
+/* .navbar-brand */
+
+.navbar-brand {
+    line-height: 50px;
+    padding: 0;
+    font-size: 1.5em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 80%;
+    padding-left: .2em;
+}
+
+.navbar-brand img {
+    margin-right: 0;
+    padding: 0;
+    vertical-align: middle;
+    margin: 5px 7.48px;
+    height: 40px;
+}
+
+.navbar-brand img:hover,
+.navbar-brand img:active,
+.navbar-brand img:focus {
+    margin: 0;
+    height: 50px;
+}
+
+#title {
+    /*width: 50%;*/
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: none;
+}
+
+/* #toc.navbar-collapse */
+
+#toc {
+    border: none;
+}
+
+/* .navbar-nav */
+
+.navbar-inverse .navbar-nav > li > a,
+.navbar-inverse .navbar-brand {
+    color: #e0e0e0;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > li > a:active,
+.navbar-inverse .navbar-nav > li > a:focus {
+    text-decoration: underline;
+    color: #ffffff;
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus,
+.navbar-inverse .navbar-nav > .active > a:active {
+    background-color: #4a8eca;
+}
+
+/* .navbar-link */
+
+.icon /* svg */ /* #settings-icon,
+#menu-icon */ {
+    /*width: 50px;
+    height: 50px;*/
+    margin: 12px;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+    transition: transform 1s cubic-bezier(0.215, 0.61, 0.355, 1); /* ease-out; */
+}
+
+.icon.navbar-link{
+    display: inline-block;
+}
+
+.icon.navbar-toggle:hover{
+    /*transform: rotateX(180deg);*/
+}
+
+.icon.navbar-link:hover{
+    transform: rotate(180deg);
+}
+
+/* Media queries (for larger screens) */
+
+@media (min-width: 768px) {
+    .navbar-header {
+        width: 60%; /* 70%; */
+    }
+    .navbar-brand.logo {
+        margin-right: 30px;
+    }
+    .navbar-collapse.collapse {
+        float: right;
+    }
+    .navbar-brand /* #title */ {
+        /*visibility:visible;*/
+        padding-left: 1em;
+    }
+    .navbar-brand,
+    #title {
+        /*width: auto;*/
+    }
+    .navbar-inverse .navbar-brand {
+        font-size: 2em;
+    }
+    /*.navbar-nav {
+        font-size: larger;
+    }*/
+}
+
+/************************************** Headings */
+
+/* Ratios:
+   Mobile: 2^(1/3) = 1.2599210499;
+   Desktop: 3^(1/3) = 1.4422495703 */
+
+h1 {
+    margin-top: 24px;
+    font-size: 2em;
+}
+
+h2 {
+    z-index: 10; /* This is to avoid that the heading is obscured by top-margin of widgets. */
+    /*margin-top: 20px;*/
+    margin-top: 74px;
+    margin-bottom: 0;
+    font-size: 1.587em;
+}
+
+:target > h2 {
+    /*margin-top: 74px;*/
+}
+
+h3,
+.panel-title {
+    font-size: 1.26em;
+}
+
+:target > h2,
+:target > .widget h3 {
+    color: #9a1a5e;
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 3em;
+    }
+    h2 {
+        font-size: 2.08em;
+    }
+    h3,
+    .panel-title {
+        font-size: 1.442em;
+    }
+}
+
+/************************************** Widgets */
+
+/* General properties */
+
+.widget {
+    margin-bottom: 0;
+}
+
+/* Headings */
+
+.widget .panel-heading {
+    padding: .5em 1em;
+    cursor: move;
+}
+
+.widget .panel-heading:hover,
+.widget .panel-heading:active,
+.widget .panel-heading:focus {
+    background-color: #ffffc0;
+}
+
+.count {
+    padding: 0 .3em;
+    font-size: smaller;
+    color: #808080;
+    background-color: #ffffff;
+    border: solid 0 #ffffff;
+    border-radius: 100px;
+}
+
+/* Lists */
+
+.widget .list-group {
+    padding: .5em 1em;
+}
+
+.widget .list-group-item {
+    padding: .2em 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: none;
+}
+
+/* Other stuff */
+
+.disabled img {
+    opacity: .25;
+}
+
+.row .container div,
+.row .container-fluid div {
+    background-color: #f0f0f0;
+}
+
+.widget ul.list-group {
+    height: 19.2em; /* Exactly 10 lines fit in this height */
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.widget-container {
+    margin-top: -50px;
+    padding-top: 74px;
+}
+
+:not(.widget-container) > .widget {
+    margin-top: 20px;
+}
+
+.widget-container:target .widget {
+    border-color: #808080;
+    box-shadow: 0 4px 4px #808080;
+}
+
+#dashboard,
+li a[href='#dashboard'] {
+    display: none;
+}
+
+/************************************** Images */
+
+img.panel-body {
+    width: 100%;
+}
+
+/************************************** Permalinks */
+
+.permalink {
+    visibility: hidden;
+}
+
+:hover > h2 .permalink,
+:hover > .panel-heading .permalink {
+    visibility: visible;
+}
+
+.permalink:hover,
+.permalink:active,
+.permalink:focus {
+    text-decoration: none;
+}
+
+/************************************** Progress bar */
+
+#progress-container {
+    display: block;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    /*box-sizing: border-box;*/
+    margin: 0;
+    border: 0;
+    padding: 0;
+    background-color: #1a5e9a;
+    /*opacity: 1;*/
+}
+
+body.loaded #progress-container {
+    visibility: hidden;
+    display: none;
+}
+
+#progress-bar {
+    position: static;
+    display: inline;
+    float: left;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    transition: width .5s linear;
+    background-color: #ffffff;
+}
+
+#progress-value {
+    position: absolute;
+    display: inline;
+    line-height: 20px;
+    height: 20px;
+    font-size: 1em;
+    margin-left: 3px;
+    color: #ffffff;
+}
+
+/**************************************************/
+/************************************** Old cruft */
+/**************************************************/
+
+/* body {
     margin: 53px 1rem 1rem 0;
     padding: 1rem 0 0 1rem;
 }
@@ -39,28 +438,6 @@ header img {
 
 header > a:hover, header > h1:hover {
     opacity: 1;
-}
-
-#progress-bar {
-    box-sizing: border-box;
-    padding: .1em;
-    display: none;
-    width: 25%;
-    height: 100%;
-    border: 1em solid #2975ac;
-    float: right;
-    background-color: #ffffff;
-    opacity: 1;
-}
-
-#progress-bar.visible {
-    display: inline;
-}
-
-#progress-bar div {
-    transition: width .25s linear;
-    height: 100%;
-    background-color: #2975ac;
 }
 
 footer {
@@ -126,11 +503,4 @@ footer {
 
 .bullet {
     margin-right: 1rem;
-}
-span.yes {
-    color: #00c000;
-}
-
-span.no {
-    color: #c00000;
-}
+} */
