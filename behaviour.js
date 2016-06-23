@@ -321,7 +321,8 @@ const init = function(api) {
          */
 
         const listEntities = function(list) {
-            const aboutSection = $('#about .panel-body');
+            $('#about .panel-body').remove();
+            const aboutSection = $('#about .list-group');
             for(var i of list)
                 aboutSection.append(renderItem(i));
         };
@@ -331,6 +332,7 @@ const init = function(api) {
          */
 
         const buildFields = function(data) {
+            $('#about .list-group').remove();
             const aboutSection = $('#about .panel-body');
             var fields = FIELDS[type],
                 f;
