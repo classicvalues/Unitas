@@ -169,12 +169,17 @@ const init = function(api) {
         const renderItem = function(item) {
             if (!item)
                 return window.alert('Error: tried to render an undefined item.')
-            else if (item.href && item.title)
+            else if (item.href && item.title) {
+                const date = getDateFromURL(item.href),
+                    label = date ? `${date}: ${item.title}` : item.title;
                 return '<li class="list-group-item"><a href="' + buildLink(item.href) +
-                    '" title="' + item.title + '">' + item.title + '</a></li>\n';
-            else if (item.href)
-                return '<li class="list-group-item"><a href="' + buildLink(item.href) + '">[Item]</a></li>\n';
-            else
+                    '" title="' + label + '">' + label + '</a></li>\n';
+            } else if (item.href) {
+                const REGEX_NO = /\/(\d+)$/,
+                    no = REGEX_NO.exec(item.href),
+                    label = no ? `#${no[1]}` : '[Item]';
+                return '<li class="list-group-item"><a href="' + buildLink(item.href) + '">' + label + '</a></li>\n';
+            } else
                 return '<li class="list-group-item">[Type of item not supported yet]</li>\n';
         };
 

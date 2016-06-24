@@ -2,6 +2,8 @@
 
 // @TODO: prevent handlers from firing too often (see David Walsh' blog).
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
 /**
  * Define a generic event handler that triggers a given action and then cancels the event altogether.
  *
@@ -175,4 +177,18 @@ const buildLink = function(href) {
     match = REGEX_AFFILIATIONS.exec(href);
     if (match && match.length > 1) return '?a=' + match[1];
     return href;
+};
+
+/**
+ * @TODO
+ */
+
+const getDateFromURL = function(href) {
+    const REGEX_DATE = /\/(\d{4})(\d{2})(\d{2})$/,
+        match = REGEX_DATE.exec(href);
+    if (match && match.length > 3) {
+        const date = new Date(match[1], match[2] - 1, match[3]);
+        return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
+    } else
+        return undefined;
 };
