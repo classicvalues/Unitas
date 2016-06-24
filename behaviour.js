@@ -36,11 +36,73 @@ const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
         'participation': SECTIONS_PARTICIPATION,
         'affiliation': SECTIONS_AFFILIATION,
     },
+    NICE_LABELS = {
+        'active-charter': 'Active charter',
+        'affiliations': 'Affiliations',
+        'cfp-uri': '<abbr title="Uniform Resource Identifier">URI</abbr> for the <abbr title="Call For Participation">CFP</abbr>',
+        'chairs': 'Chairs',
+        'charters': 'Charters',
+        'closed': 'Closed',
+        'created': 'Created',
+        'date': 'Date',
+        'deliverers': 'Deliverers',
+        'description': 'Description',
+        'domain': 'Domain',
+        'editor-draft': `Editor's draft`,
+        'editors': 'Editors',
+        'end-date': 'Ends',
+        'end': 'End',
+        'external': 'External',
+        'family': 'Family name',
+        'first-version': 'First version',
+        'given': 'Given name',
+        'group': 'Group',
+        'groups': 'Groups',
+        'homepage': 'Home page',
+        'individual': 'Individual',
+        'informative': 'Is informative',
+        'initial-end': 'Initially ended',
+        'is-closed': 'Is closed',
+        'is-member': 'Is member',
+        'is-on-rec-track': 'Is on <em>Rec track</em>',
+        'join': '<abbr title="Uniform Resource Identifier">URI</abbr> to join',
+        'latest-version': 'Latest version',
+        'lead': 'Lead',
+        'link': 'Link',
+        'next-charter': 'Next charter',
+        'organization': 'Organization',
+        'participants': 'Participants',
+        'participation-as-public-ie-allowed': 'Is participation as public <abbr title="Invited Expert">IE</abbr> allowed',
+        'participations': 'Participations',
+        'photos': 'Photos',
+        'pp-status': '<abbr title="Patent Policy">PP</abbr> status',
+        'predecessors': 'Predecessors',
+        'previous-charter': 'Previous charter',
+        'process-rules': 'Process rules',
+        'required-new-commitments': 'Required new commitments',
+        'services': 'Services',
+        'shortlink': '<em>Shortlink</em>',
+        'shortname': '<em>Shortname</em>',
+        'specification': 'Specification',
+        'specifications': 'Specifications',
+        'staging': 'Staging',
+        'start-date': 'Starts',
+        'start': 'Start',
+        'status': 'Status',
+        'successors': 'Successors',
+        'teamcontacts': 'Team contacts',
+        'type': 'Type',
+        'uri': '<abbr title="Uniform Resource Identifier">URI</abbr>',
+        'user': 'Member',
+        'users': 'Members',
+        'versions': 'Versions',
+        'work-title': 'Work title'
+    },
     FIELDS_DOMAIN = ['is-closed', 'staging'],
     FIELDS_GROUP = ['type', 'description', 'start-date', 'end-date', 'is-closed', 'staging', 'participation-as-public-ie-allowed', 'is-on-rec-track'],
     FIELDS_CHARTER = ['start', 'initial-end', 'end', 'uri', 'cfp-uri', 'required-new-commitments'],
     FIELDS_SPEC = ['shortname', 'description', 'shortlink'],
-    FIELDS_VERSION = ['status', 'uri', 'date', 'informative', 'shortlinke', 'editor-draft', 'process-rules'],
+    FIELDS_VERSION = ['status', 'uri', 'date', 'informative', 'shortlink', 'editor-draft', 'process-rules'],
     FIELDS_USER = ['given', 'family', 'work-title'],
     FIELDS_SERVICE = ['type', 'link', 'external', 'closed'],
     FIELDS_PARTICIPATION = ['individual', 'created'],
@@ -190,23 +252,26 @@ const init = function(api) {
         const renderField = function(key, value, label) {
             if (undefined === key || undefined === value)
                 return window.alert('Error: tried to render an undefined field.')
-            else if ('boolean' === typeof value)
-                return '<p><strong>' + key + '</strong>: <span class="' +
-                    (value ? 'yes">&#10003;' : 'no">&#10007;') +
-                    '</span></p>\n';
-            else if (REGEX_URI.test(value)) {
-                if (label)
-                    return '<p><strong>' + key + '</strong>: <a href="' + buildLink(value) + '">' + label + '</a></p>\n';
-                else if (value === buildLink(value))
-                    return '<p><strong>' + key + '</strong>: <a href="' + value + '"><code>' + normaliseURI(value) + '</code></a></p>\n';
+            else {
+                const humanValue = NICE_LABELS[key];
+                if ('boolean' === typeof value)
+                    return '<p><strong>' + humanValue + '</strong>: <span class="' +
+                        (value ? 'yes">&#10003;' : 'no">&#10007;') +
+                        '</span></p>\n';
+                else if (REGEX_URI.test(value)) {
+                    if (label)
+                        return '<p><strong>' + humanValue + '</strong>: <a href="' + buildLink(value) + '">' + label + '</a></p>\n';
+                    else if (value === buildLink(value))
+                        return '<p><strong>' + humanValue + '</strong>: <a href="' + value + '"><code>' + normaliseURI(value) + '</code></a></p>\n';
+                    else
+                        return '<p><strong>' + humanValue + '</strong>: <a href="' + buildLink(value) + '">see</a></p>\n';
+                } else if (REGEX_DATE.test(value))
+                    return '<p><strong>' + humanValue + '</strong>: ' + value + '</p>\n';
+                else if ('string' === typeof value)
+                    return '<p><strong>' + humanValue + '</strong>: <em>' + value + '</em></p>\n';
                 else
-                    return '<p><strong>' + key + '</strong>: <a href="' + buildLink(value) + '">see</a></p>\n';
-            } else if (REGEX_DATE.test(value))
-                return '<p><strong>' + key + '</strong>: ' + value + '</p>\n';
-            else if ('string' === typeof value)
-                return '<p><strong>' + key + '</strong>: <em>' + value + '</em></p>\n';
-            else
-                return '<p><strong>' + key + '</strong>: [Type of field not supported yet]</p>\n';
+                    return '<p><strong>' + humanValue + '</strong>: [Type of field not supported yet]</p>\n';
+            }
         };
 
         /**
@@ -236,7 +301,7 @@ const init = function(api) {
                     var widget = $('#sample-widget').clone(),
                         item;
                     widget.attr('id', s).removeClass('sample');
-                    $('h3', widget).contents()[0].textContent = s + ' ';
+                    $('h3', widget).contents()[0].textContent = NICE_LABELS[s] + ' ';
                     $('h3 span.count', widget).text(data.length);
                     $('h3 a', widget).attr('href', '#' + s);
                     for(var i of data)
