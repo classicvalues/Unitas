@@ -1,7 +1,5 @@
 'use strict';
 
-// @TODO: prevent handlers from firing too often (see David Walsh' blog).
-
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 /**
