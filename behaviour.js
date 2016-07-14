@@ -214,6 +214,7 @@ const init = function(api) {
             attachHandlers();
             window.setTimeout(function() {
                 body.addClass('loaded');
+                body.scrollspy('refresh');
             }, 500);
         }
     };
@@ -534,8 +535,8 @@ requirejs.config({
     paths: {
         w3capi: 'https://w3c.github.io/node-w3capi/lib/w3capi',
         // @TODO: switch to minified jQuery in production:
-        // jquery: 'https://code.jquery.com/jquery-2.2.3.min',
-        jquery: 'https://code.jquery.com/jquery-2.2.3',
+        // jquery: 'https://code.jquery.com/jquery-2.2.4.min',
+        jquery: 'https://code.jquery.com/jquery-2.2.4',
         // @TODO: switch to minified Bootstrap JS in production:
         // bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min',
         bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap',
