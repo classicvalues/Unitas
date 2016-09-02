@@ -1,6 +1,6 @@
 'use strict';
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 /**
  * Define a generic event handler that triggers a given action and then cancels the event altogether.
@@ -9,7 +9,7 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
  * @returns {Function} - the resulting event handler.
  */
 
-const buildHandler = function(action) {
+var buildHandler = function(action) {
     return function(event) {
         if (event && event.preventDefault)
             event.preventDefault();
@@ -23,8 +23,8 @@ const buildHandler = function(action) {
  * @TODO
  */
 
-const abbreviateGroupName = function(name) {
-    const REGEX_BG = /business\s+group$/i,
+var abbreviateGroupName = function(name) {
+    var REGEX_BG = /business\s+group$/i,
         REGEX_CG = /community\s+group$/i,
         REGEX_IG = /interest\s+group$/i,
         REGEX_WG = /working\s+group$/i,
@@ -49,10 +49,10 @@ const abbreviateGroupName = function(name) {
  * @returns {String} The "normalised", (probably) equivalent URI.
  */
 
-const normaliseURI = function(uri) {
+var normaliseURI = function(uri) {
 
     var result = uri.trim().toLowerCase();
-    const matches = REGEX_URI.exec(result);
+    var matches = REGEX_URI.exec(result);
 
     if (matches && matches.length > 2) {
         result = matches[2];
@@ -66,7 +66,7 @@ const normaliseURI = function(uri) {
  * @TODO
  */
 
-const getUrlVars = function() {
+var getUrlVars = function() {
     var vars = [], hash;
     var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
     for(var i = 0; i < hashes.length; i++) {
@@ -82,8 +82,8 @@ const getUrlVars = function() {
  * @TODO
  */
 
-const processURL = function() {
-    const params = getUrlVars();
+var processURL = function() {
+    var params = getUrlVars();
     if(params.d) {
         type = TYPE_DOMAIN;
         id = ('all' !== params.d) ? params.d : undefined;
@@ -133,8 +133,8 @@ const processURL = function() {
  * @TODO
  */
 
-const buildIndex = function() {
-    const sections = SECTIONS[type];
+var buildIndex = function() {
+    var sections = SECTIONS[type];
     var result = '';
     for(var s in sections) {
         result += '<li><a href="#' + sections[s] + '">' + sections[s] + '</a></li>\n';
@@ -146,8 +146,8 @@ const buildIndex = function() {
  * @TODO
  */
 
-const buildLink = function(href) {
-    const REGEX_DOMAIN = /\/domains\/(\d+)$/i,
+var buildLink = function(href) {
+    var REGEX_DOMAIN = /\/domains\/(\d+)$/i,
         REGEX_GROUP = /\/groups\/(\d+)$/i,
         REGEX_CHARTER = /\/groups\/(\d+)\/charters\/(\d+)$/i,
         REGEX_SPEC = /\/specifications\/([^\/]+)$/i,
@@ -181,11 +181,11 @@ const buildLink = function(href) {
  * @TODO
  */
 
-const getDateFromURL = function(href) {
-    const REGEX_DATE = /\/(\d{4})(\d{2})(\d{2})$/,
+var getDateFromURL = function(href) {
+    var REGEX_DATE = /\/(\d{4})(\d{2})(\d{2})$/,
         match = REGEX_DATE.exec(href);
     if (match && match.length > 3) {
-        const date = new Date(match[1], match[2] - 1, match[3]);
+        var date = new Date(match[1], match[2] - 1, match[3]);
         return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
     } else
         return undefined;
