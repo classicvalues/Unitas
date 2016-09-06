@@ -1,6 +1,6 @@
 'use strict';
 
-const API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
+var API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     DEBUG = false,
     OPTS = {},    // {embed: true},
     REGEX_URI = /^https?:\/\/(www\.)?((.+)[^\ \/])\/?$/i,
@@ -159,7 +159,7 @@ var type,
  * @param {Object} api an object to access the W3C API.
  */
 
-const init = function(api) {
+var init = function(api) {
 
     $('html').removeClass('no-js').addClass('js');
 
@@ -167,7 +167,7 @@ const init = function(api) {
      * Respond to vertical scrolling
      */
 
-    const handleScroll = function(event) {
+    var handleScroll = function(event) {
         html.toggleClass('scrolled', body[0].scrollTop > 0);
         if (body[0].scrollTop > 74)
             title.fadeIn();
@@ -179,7 +179,7 @@ const init = function(api) {
      * Switch between toggle and narrow modes.
      */
 
-    const toggleWidth = function(event) {
+    var toggleWidth = function(event) {
         $('.container, .container-fluid')
             .toggleClass('container-fluid', event.target.checked)
             .toggleClass('container', !event.target.checked);
@@ -189,8 +189,8 @@ const init = function(api) {
      * @TODO
      */
 
-    const buildRoot = function() {
-        const section = '<ul>\n' +
+    var buildRoot = function() {
+        var section = '<ul>\n' +
             '<li><a href="?d=all">All domains</a></li>\n' +
             '<li><a href="?g=all">All groups</a></li>\n' +
             '<li><a href="?s=all">All specifications</a></li>\n' +
@@ -203,11 +203,11 @@ const init = function(api) {
      * @TODO
      */
 
-    const updateProgress = function(delta) {
+    var updateProgress = function(delta) {
         pending += delta;
         if (delta > 0)
             total += delta;
-        const value = (total - pending) * 100 / total;
+        var value = (total - pending) * 100 / total;
         innerBar.css('width', value + '%');
         percent.text(parseInt(value) + '%');
         if (pending < 1) {
@@ -223,22 +223,22 @@ const init = function(api) {
      * @TODO
      */
 
-    const retrieveEntity = function() {
+    var retrieveEntity = function() {
 
         /**
          * @TODO
          */
 
-        const renderItem = function(item) {
+        var renderItem = function(item) {
             if (!item)
                 return window.alert('Error: tried to render an undefined item.')
             else if (item.href && item.title) {
-                const date = getDateFromURL(item.href),
+                var date = getDateFromURL(item.href),
                     label = date ? `${date}: ${item.title}` : item.title;
                 return '<li class="list-group-item"><a href="' + buildLink(item.href) +
                     '" title="' + label + '">' + label + '</a></li>\n';
             } else if (item.href) {
-                const REGEX_NO = /\/(\d+)$/,
+                var REGEX_NO = /\/(\d+)$/,
                     no = REGEX_NO.exec(item.href),
                     label = no ? `#${no[1]}` : '[Item]';
                 return '<li class="list-group-item"><a href="' + buildLink(item.href) + '">' + label + '</a></li>\n';
@@ -250,11 +250,11 @@ const init = function(api) {
          * @TODO
          */
 
-        const renderField = function(key, value, label) {
+        var renderField = function(key, value, label) {
             if (undefined === key || undefined === value)
                 return window.alert('Error: tried to render an undefined field.')
             else {
-                const humanValue = NICE_LABELS[key];
+                var humanValue = NICE_LABELS[key];
                 if ('boolean' === typeof value)
                     return '<p><strong>' + humanValue + '</strong>: <span class="' +
                         (value ? 'yes">&#10003;' : 'no">&#10007;') +
@@ -279,7 +279,7 @@ const init = function(api) {
          * @TODO
          */
 
-        const renderPhoto = function(photos) {
+        var renderPhoto = function(photos) {
             if (photos) {
                 for (var p of photos)
                     if ('thumbnail' === p.name)
@@ -293,7 +293,7 @@ const init = function(api) {
          * @TODO
          */
 
-        const buildAPIHandler = function(s) {
+        var buildAPIHandler = function(s) {
             return function(error, data) {
                 if (error) {
                     // window.alert('Error: "' + error + '"');
@@ -320,9 +320,9 @@ const init = function(api) {
          * @TODO
          */
 
-        const listEntities = function(list) {
+        var listEntities = function(list) {
             $('#about .panel-body').remove();
-            const aboutSection = $('#about .list-group');
+            var aboutSection = $('#about .list-group');
             for(var i of list)
                 aboutSection.append(renderItem(i));
         };
@@ -331,9 +331,9 @@ const init = function(api) {
          * @TODO
          */
 
-        const buildFields = function(data) {
+        var buildFields = function(data) {
             $('#about .list-group').remove();
-            const aboutSection = $('#about .panel-body');
+            var aboutSection = $('#about .panel-body');
             var fields = FIELDS[type],
                 f;
             for(f of fields)
@@ -342,7 +342,7 @@ const init = function(api) {
             fields = DEEPFIELDS[type];
             for(f of fields) {
                 if ('photos' === f) {
-                    const photoSection = renderPhoto(data['_links'].photos);
+                    var photoSection = renderPhoto(data['_links'].photos);
                     if (photoSection)
                         aboutSection.append(photoSection);
                 } else if (undefined !== data['_links'] && undefined !== data['_links'][f])
@@ -354,8 +354,8 @@ const init = function(api) {
          * @TODO
          */
 
-        const fetchSections = function() {
-            const sections = SECTIONS[type];
+        var fetchSections = function() {
+            var sections = SECTIONS[type];
             var func, thisSec;
             if (TYPE_VERSION === type) {
                 for(var s in sections) {
@@ -393,7 +393,7 @@ const init = function(api) {
          * @TODO
          */
 
-        const processEntity = function(error, data) {
+        var processEntity = function(error, data) {
             if (error) {
                 window.alert('Error: "' + error + '""');
             } else {
@@ -421,7 +421,7 @@ const init = function(api) {
                     fetchSections();
                     buildFields(data);
                 }
-                const headTitle = $('head title');
+                var headTitle = $('head title');
                 headTitle.html(headTitle.text() + ' &middot; ' + $('<span>' + name + '</span>').text());
                 title.removeClass('loading').filter('a').html(name);
                 $('h1').removeClass('loading')
@@ -476,7 +476,7 @@ const init = function(api) {
      * @TODO
      */
 
-    const collapseNavBar = function() {
+    var collapseNavBar = function() {
         $('.navbar-collapse').collapse('hide');
     };
 
@@ -484,7 +484,7 @@ const init = function(api) {
      * @TODO
      */
 
-    const showNotImplemented = function() {
+    var showNotImplemented = function() {
         if (event && event.target &&
             'permalink' !== event.target.className && 'span' !== event.target.tagName.toLowerCase() &&
             (!event.which || 1 === event.which)) {
@@ -496,7 +496,7 @@ const init = function(api) {
      * @TODO
      */
 
-    const attachHandlers = function() {
+    var attachHandlers = function() {
         $('#optionWide').change(buildHandler(toggleWidth));
         $(document).scroll(handleScroll);
         $('.navbar-nav').click(collapseNavBar);
