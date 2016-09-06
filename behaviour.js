@@ -162,6 +162,7 @@ var type,
 var init = function(api) {
 
     $('html').removeClass('no-js').addClass('js');
+    console.log('Version 1');
 
     /**
      * Respond to vertical scrolling
