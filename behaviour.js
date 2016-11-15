@@ -542,7 +542,8 @@ requirejs.config({
         jquery: 'https://code.jquery.com/jquery-2.2.4',
         // @TODO: switch to minified Bootstrap JS in production:
         // bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min',
-        bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap',
+        // bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap',
+        bootstrap: 'https://www.w3.org/scripts/bootstrap/3.3.4/js/bootstrap',
         utils: 'utils'
     },
     shim: {
