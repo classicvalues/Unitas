@@ -1,14 +1,14 @@
 'use strict';
 
-var VERSION = '2.1.0',
+var VERSION = '2.2.0',
     API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     DEBUG = false,
     OPTS = {embed: true},
-    REGEX_URI = /^https?:\/\/(www\.)?((.+)[^\ \/])\/?$/i,
+    REGEX_URI = /^(https?|irc):\/\/(www\.)?((.+)[^\ \/])\/?$/i,
     REGEX_DATE = /^[\d\-\/\.\ ]{8,10}$/i,
     MODE = 'param',
     TYPE_W3C = 'w3c',
-    TYPE_DOMAIN = 'domain',
+    TYPE_FUNCTION = 'function',
     TYPE_GROUP = 'group',
     TYPE_CHARTER = 'charter',
     TYPE_SPEC = 'spec',
@@ -17,7 +17,7 @@ var VERSION = '2.1.0',
     TYPE_SERVICE = 'service',
     TYPE_PARTICIPATION = 'participation',
     TYPE_AFFILIATION = 'affiliation',
-    SECTIONS_DOMAIN = ['groups', 'services', 'users'],
+    SECTIONS_FUNCTION = ['services', 'users'],
     SECTIONS_GROUP = ['chairs', 'services', 'specifications', 'teamcontacts', 'users', 'charters', 'participations'],
     SECTIONS_CHARTER = [],
     SECTIONS_SPEC = ['versions'],
@@ -27,7 +27,7 @@ var VERSION = '2.1.0',
     SECTIONS_PARTICIPATION = ['participants'],
     SECTIONS_AFFILIATION = ['participants', 'participations'],
     SECTIONS = {
-        'domain': SECTIONS_DOMAIN,
+        'function': SECTIONS_FUNCTION,
         'group': SECTIONS_GROUP,
         'charter': SECTIONS_CHARTER,
         'spec': SECTIONS_SPEC,
@@ -48,7 +48,7 @@ var VERSION = '2.1.0',
         'date': 'Date',
         'deliverers': 'Deliverers',
         'description': 'Description',
-        'domain': 'Domain',
+        'function': 'Function',
         'editor-draft': `Editor's draft`,
         'editors': 'Editors',
         'end-date': 'Ends',
@@ -103,7 +103,7 @@ var VERSION = '2.1.0',
         'versions': 'Versions',
         'work-title': 'Work title'
     },
-    FIELDS_DOMAIN = ['is-closed', 'staging'],
+    FIELDS_FUNCTION = ['is-closed', 'staging'],
     FIELDS_GROUP = ['type', 'description', 'start-date', 'end-date', 'is-closed', 'staging', 'participation-as-public-ie-allowed', 'is-on-rec-track'],
     FIELDS_CHARTER = ['start', 'initial-end', 'end', 'uri', 'cfp-uri', 'required-new-commitments'],
     FIELDS_SPEC = ['shortname', 'description', 'shortlink'],
@@ -113,7 +113,7 @@ var VERSION = '2.1.0',
     FIELDS_PARTICIPATION = ['individual', 'created'],
     FIELDS_AFFILIATION = ['is-member'],
     FIELDS = {
-        'domain': FIELDS_DOMAIN,
+        'function': FIELDS_FUNCTION,
         'group': FIELDS_GROUP,
         'charter': FIELDS_CHARTER,
         'spec': FIELDS_SPEC,
@@ -123,8 +123,8 @@ var VERSION = '2.1.0',
         'participation': FIELDS_PARTICIPATION,
         'affiliation': FIELDS_AFFILIATION,
     },
-    DEEPFIELDS_DOMAIN = ['homepage', 'lead'],
-    DEEPFIELDS_GROUP = ['domain', 'active-charter', 'homepage', 'join', 'pp-status'],
+    DEEPFIELDS_FUNCTION = ['homepage', 'lead'],
+    DEEPFIELDS_GROUP = ['active-charter', 'homepage', 'join', 'pp-status'],
     DEEPFIELDS_CHARTER = ['group', 'next-charter', 'previous-charter'],
     DEEPFIELDS_SPEC = ['first-version', 'latest-version'],
     DEEPFIELDS_VERSION = ['specification'],
@@ -133,7 +133,7 @@ var VERSION = '2.1.0',
     DEEPFIELDS_PARTICIPATION = ['group', 'organization', 'user'],
     DEEPFIELDS_AFFILIATION = ['homepage'],
     DEEPFIELDS = {
-        'domain': DEEPFIELDS_DOMAIN,
+        'function': DEEPFIELDS_FUNCTION,
         'group': DEEPFIELDS_GROUP,
         'charter': DEEPFIELDS_CHARTER,
         'spec': DEEPFIELDS_SPEC,
@@ -154,7 +154,6 @@ var type,
     percent,
     nav,
     index,
-    article,
     total = 0,
     pending = 0;
 
@@ -196,13 +195,19 @@ var init = function(api) {
      */
 
     var buildRoot = function() {
-        var section = '<ul>\n' +
-            '<li><a href="?d=all">All domains</a></li>\n' +
-            '<li><a href="?g=all">All groups</a></li>\n' +
-            '<li><a href="?s=all">All specifications</a></li>\n' +
-            '<li><a href="?a=all">All affiliations</a></li>\n' +
-            '</ul>\n';
-        article.append(section);
+        name = 'W3C';
+        var headTitle = $('head title');
+        headTitle.html(headTitle.text() + ' &middot; ' + $('<span>' + name + '</span>').text());
+        title.removeClass('loading').filter('a').html(name);
+        $('h1').removeClass('loading')
+        $('h1 a').html(name);
+        $('#about .panel-body').remove();
+        $('#about .list-group').html(`<li class="list-group-item"><a href="?f=all">All functions</a></li>
+            <li class="list-group-item"><a href="?g=all">All groups</a></li>
+            <li class="list-group-item"><a href="?s=all">All specifications</a></li>
+            <li class="list-group-item"><a href="?a=all">All affiliations</a></li>`);
+        showSection('about');
+        updateProgress(0);
     };
 
     /**
@@ -244,6 +249,7 @@ var init = function(api) {
         };
 
         /*
+         * Function: discr="function", name, staging, is-closed, _links.{lead.title, homepage.href?}.
          * User: discr="user", family, given, id, name, work-title?, _links.self.href.
          * Participation: created, individual, _links.(group.(href, title), self.href, user.(href, title)?, organization.(href, title)?).
          * Group: discr="w3cgroup", description, id, name, type.
@@ -253,9 +259,11 @@ var init = function(api) {
          * Service: link, type, shortdesc?.
          * Charter: start, end, initial-end.
          *
+         * f=all: functions.
          * g=all: groups.
          * s=all: specs.
          * a=all: affiliations.
+         * f=6823109: users, services.
          * g=68239: users x 3, services, specs, charters, participations.
          * g=46300&c=155: (none).
          * s=dwbp: versions.
@@ -274,7 +282,14 @@ var init = function(api) {
             if (!entity)
                 return window.alert('Error: tried to render an undefined item')
             var result;
-            if ('user' === entity.discr) {
+            if ('function' === entity.discr) {
+                // Function:
+                result = `<li class="list-group-item">
+                    <a href="${buildLink(entity._links.self.href)}">
+                        ${entity.name}<span class="suffix">, led by ${entity._links.lead.title}</span>
+                    </a>
+                </li>`;
+            } else if ('user' === entity.discr) {
                 // User:
                 var prefix = entity['work-title'] ? `<span class="suffix">, ${entity['work-title']}` : '';
                 result = `<li class="list-group-item">\
@@ -336,17 +351,35 @@ var init = function(api) {
                 // Service:
                 if ('lists' === entity.type && entity.hasOwnProperty('shortdesc')) {
                     // Mailing list:
-                    result = `<li class="list-group-item">\
-                        <a href="${buildLink(entity._links.self.href)}">\
-                            <code>${entity.shortdesc}</code> (mailing list)\
-                        </a>\
+                    result = `<li class="list-group-item">
+                        <a href="${buildLink(entity._links.self.href)}">
+                            <code>${entity.shortdesc}</code>
+                            <span class="suffix">(mailing list)</span>
+                        </a>
                     </li>`;
-                } else if ('tracker' === entity.type) {
-                    // Tracker:
-                    result = `<li class="list-group-item">\
-                        <a href="${buildLink(entity._links.self.href)}">\
-                            <code>${normaliseURI(entity.link)}</code> (tracker)\
-                        </a>\
+                } else if ('blog' === entity.type && entity.hasOwnProperty('shortdesc')) {
+                    // Blog:
+                    result = `<li class="list-group-item">
+                        <a href="${buildLink(entity._links.self.href)}">
+                            ${entity.shortdesc}
+                            <span class="suffix">(blog)</span>
+                        </a>
+                    </li>`;
+                } else if ('tracker' === entity.type || 'repository' === entity.type || 'wiki' === entity.type || 'chat' === entity.type) {
+                    // Tracker, repo, wiki or chat:
+                    result = `<li class="list-group-item">
+                        <a href="${buildLink(entity._links.self.href)}">
+                            <code>${normaliseURI(entity.link)}</code>
+                            <span class="suffix">(${entity.type})</span>
+                        </a>
+                    </li>`;
+                } else if ('rss' === entity.type) {
+                    // RSS:
+                    result = `<li class="list-group-item">
+                        <a href="${buildLink(entity._links.self.href)}">
+                            <code>${normaliseURI(entity.link)}</code>
+                            <span class="suffix">(RSS)</span>
+                        </a>
                     </li>`;
                 } else {
                     result = `<li class="list-group-item">[Unknown type of service]</li>\n`;
@@ -435,6 +468,7 @@ var init = function(api) {
                             $('.list-group', widget).append(item);
                         }
                     $('#details').append(widget);
+                    showSection('details');
                 }
                 updateProgress(-1);
             };
@@ -447,8 +481,10 @@ var init = function(api) {
         var listEntities = function(list) {
             $('#about .panel-body').remove();
             var aboutSection = $('#about .list-group');
-            for(var i of list)
+            for(var i of list) {
                 aboutSection.append(renderItem(i, type));
+                showSection('about');
+            }
         };
 
         /**
@@ -461,18 +497,25 @@ var init = function(api) {
             var fields = FIELDS[type],
                 f;
             for(f of fields)
-                if (undefined !== data[f])
+                if (undefined !== data[f]) {
                     aboutSection.append(renderField(f, data[f]));
+                    showSection('about');
+                }
             fields = DEEPFIELDS[type];
             for(f of fields) {
                 if ('photos' === f) {
                     var photoSection = renderPhoto(data['_links'].photos);
-                    if (photoSection)
+                    if (photoSection) {
                         aboutSection.append(photoSection);
-                } else if (undefined !== data['_embedded'] && undefined !== data['embedded'][f])
+                        showSection('about');
+                    }
+                } else if (undefined !== data['_embedded'] && undefined !== data['embedded'][f]) {
                     aboutSection.append(renderField(f, data['_embedded'][f].href, data['_embedded'][f].title));
-                else if (undefined !== data['_links'] && undefined !== data['_links'][f])
+                    showSection('about');
+                } else if (undefined !== data['_links'] && undefined !== data['_links'][f]) {
                     aboutSection.append(renderField(f, data['_links'][f].href, data['_links'][f].title));
+                    showSection('about');
+                }
             }
         };
 
@@ -480,7 +523,7 @@ var init = function(api) {
          * @TODO
          */
 
-        var fetchSections = function() {
+        var fetchSections = function(data) {
             var sections = SECTIONS[type];
             var func, thisSec;
             if (TYPE_VERSION === type) {
@@ -490,8 +533,8 @@ var init = function(api) {
                     api.specification(id.s).version(id.v)[thisSec]().fetch(OPTS, buildAPIHandler(thisSec));
                 }
             } else {
-                if (TYPE_DOMAIN === type) {
-                    func = api.domain;
+                if (TYPE_FUNCTION === type) {
+                    func = api.function;
                 } else if (TYPE_GROUP === type) {
                     func = api.group;
                 } else if (TYPE_CHARTER === type) {
@@ -509,8 +552,12 @@ var init = function(api) {
                 }
                 for(var s in sections) {
                     thisSec = sections[s];
-                    updateProgress(1);
-                    func(id)[thisSec]().fetch(OPTS, buildAPIHandler(thisSec));
+                    // @TODO: remove this condition; it's a workaround for https://github.com/w3c/w3c-api/issues/73
+                    if ((TYPE_PARTICIPATION !== type || !data || !data.individual || 'participants' !== thisSec) &&
+                        (TYPE_GROUP !== type || '7756' !== id || 'participations' !== thisSec)) {
+                        updateProgress(1);
+                        func(id)[thisSec]().fetch(OPTS, buildAPIHandler(thisSec));
+                    }
                 }
             }
         };
@@ -528,8 +575,8 @@ var init = function(api) {
                 var name = '[Item]';
                 if (undefined === id) {
                     name = 'All ';
-                    if (TYPE_DOMAIN === type)
-                        name += 'domains';
+                    if (TYPE_FUNCTION === type)
+                        name += 'functions';
                     if (TYPE_GROUP === type)
                         name += 'groups';
                     if (TYPE_SPEC === type)
@@ -545,7 +592,7 @@ var init = function(api) {
                     else if (data.created) name = data.created;
                     name = abbreviateGroupName(name);
                     index.html(buildIndex());
-                    fetchSections();
+                    fetchSections(data);
                     buildFields(data);
                 }
                 var headTitle = $('head title');
@@ -557,12 +604,12 @@ var init = function(api) {
             updateProgress(-1);
         };
 
-        if (TYPE_DOMAIN === type) {
+        if (TYPE_FUNCTION === type) {
             updateProgress(1);
             if (id)
-                api.domain(id).fetch(OPTS, processEntity);
+                api.function(id).fetch(OPTS, processEntity);
             else
-                api.domains().fetch(OPTS, processEntity);
+                api.functions().fetch(OPTS, processEntity);
         } else if (TYPE_GROUP === type) {
             updateProgress(1);
             if (id)
@@ -643,12 +690,9 @@ var init = function(api) {
         percent = $('#progress-value');
         nav = $('nav');
         index = $('#index');
-        article = $('article');
         if (processURL()) {
-            if (TYPE_GROUP === type && undefined !== id) {
-                $('#dashboard').show();
-                $('li a[href="#dashboard"]').css('display', 'block');
-            }
+            if (TYPE_GROUP === type && undefined !== id)
+                showSection('dashboard');
             api.apiKey = API_KEY;
             api.authMode = MODE;
             retrieveEntity();

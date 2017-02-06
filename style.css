@@ -321,13 +321,17 @@ h3,
     box-shadow: 0 4px 4px #808080;
 }
 
+#about,
+#details,
 #dashboard,
+li a[href='#about'],
+li a[href='#details'],
 li a[href='#dashboard'] {
     display: none;
 }
 
 .suffix {
-    opacity: .6667;
+    opacity: .5;
 }
 
 /************************************** Images */

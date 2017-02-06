@@ -1,31 +1,31 @@
 # Unitas
 
-Prototypes for the &ldquo;dynamic pages&rdquo; project.
+Prototypes for the &ldquo;dynamic pages&rdquo; project
 
 ## Examples
 
-<!-- ### Root view
+### &ldquo;Root&rdquo; view
 
-* With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unitas/) -->
+With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unitas/)
 
 ### Lists of entities that are &ldquo;listable&rdquo;
 
-* All domains: [`/?d=all`](https://w3c.github.io/Unitas/?d=all)
-* All groups: [`/?g=all`](https://w3c.github.io/Unitas/?g=all)
-* All specs: [`/?s=all`](https://w3c.github.io/Unitas/?s=all)
-* All affiliations: [`/?a=all`](https://w3c.github.io/Unitas/?a=all)
+1. All functions: [`/?f=all`](https://w3c.github.io/Unitas/?f=all)
+1. All groups: [`/?g=all`](https://w3c.github.io/Unitas/?g=all)
+1. All specs: [`/?s=all`](https://w3c.github.io/Unitas/?s=all)
+1. All affiliations: [`/?a=all`](https://w3c.github.io/Unitas/?a=all)
 
 ### Examples of particular Entities
 
-* A domain: [`/?d=41381`](https://w3c.github.io/Unitas/?d=41381)
-* A group: [`/?g=68239`](https://w3c.github.io/Unitas/?g=68239)
-* A charter: [`/?g=46300&c=155`](https://w3c.github.io/Unitas/?g=46300&c=155)
-* A spec: [`/?s=dwbp`](https://w3c.github.io/Unitas/?s=dwbp)
-* A version: [`/?s=2dcontext&v=20110525`](https://w3c.github.io/Unitas/?s=2dcontext&v=20110525)
-* A user: [`/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8`](https://w3c.github.io/Unitas/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8)
-* A service: [`/?x=1913`](https://w3c.github.io/Unitas/?x=1913)
-* A participation: [`/?p=1503`](https://w3c.github.io/Unitas/?p=1503)
-* An affiliation: [`/?a=52794`](https://w3c.github.io/Unitas/?a=52794)
+1. A function: [`/?f=109`](https://w3c.github.io/Unitas/?f=109)
+1. A group: [`/?g=68239`](https://w3c.github.io/Unitas/?g=68239)
+1. A charter: [`/?g=46300&c=155`](https://w3c.github.io/Unitas/?g=46300&c=155)
+1. A spec: [`/?s=dwbp`](https://w3c.github.io/Unitas/?s=dwbp)
+1. A version: [`/?s=2dcontext&v=20110525`](https://w3c.github.io/Unitas/?s=2dcontext&v=20110525)
+1. A user: [`/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8`](https://w3c.github.io/Unitas/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8)
+1. A service: [`/?x=1913`](https://w3c.github.io/Unitas/?x=1913)
+1. A participation: [`/?p=1503`](https://w3c.github.io/Unitas/?p=1503)
+1. An affiliation: [`/?a=52794`](https://w3c.github.io/Unitas/?a=52794)
 
 ## Contributing
 
@@ -76,6 +76,6 @@ In production, resources will be concatenated and loaded in parallel, and minifi
 
 ## Credits
 
-Copyright &copy; 2016 [World Wide Web Consortium](https://www.w3.org/).
+Copyright &copy; 2016&ndash;2017 [World Wide Web Consortium](https://www.w3.org/).
 
 This project is licensed [under the terms of the MIT license](LICENSE.md).

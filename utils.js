@@ -51,11 +51,11 @@ var abbreviateGroupName = function(name) {
 
 var normaliseURI = function(uri) {
 
-    var result = uri.trim().toLowerCase();
+    var result = uri.trim(); // .toLowerCase();
     var matches = REGEX_URI.exec(result);
 
-    if (matches && matches.length > 2) {
-        result = matches[2];
+    if (matches && matches.length > 3) {
+        result = matches[3];
     }
 
     return result;
@@ -84,9 +84,9 @@ var getUrlVars = function() {
 
 var processURL = function() {
     var params = getUrlVars();
-    if(params.d) {
-        type = TYPE_DOMAIN;
-        id = ('all' !== params.d) ? params.d : undefined;
+    if(params.f) {
+        type = TYPE_FUNCTION;
+        id = ('all' !== params.f) ? params.f : undefined;
     } else if(params.c) {
         if (params.g) {
             type = TYPE_CHARTER;
@@ -146,7 +146,7 @@ var buildIndex = function() {
  */
 
 var buildLink = function(href, type) {
-    var REGEX_DOMAIN = /\/domains\/(\d+)$/i,
+    var REGEX_FUNCTION = /\/functions\/(\d+)$/i,
         REGEX_GROUP = /\/groups\/(\d+)$/i,
         REGEX_CHARTER = /\/groups\/(\d+)\/charters\/(\d+)$/i,
         REGEX_SPEC = /\/specifications\/([^\/]+)$/i,
@@ -155,8 +155,8 @@ var buildLink = function(href, type) {
         REGEX_SERVICE = /\/services\/(\d+)$/i,
         REGEX_PARTICIPATIONS = /\/participations\/(\d+)$/i,
         REGEX_AFFILIATIONS = /\/affiliations\/(\d+)$/i;
-    var match = REGEX_DOMAIN.exec(href);
-    if (match && match.length > 1) return '?d=' + match[1];
+    var match = REGEX_FUNCTION.exec(href);
+    if (match && match.length > 1) return '?f=' + match[1];
     match = REGEX_GROUP.exec(href);
     if (match && match.length > 1) return '?g=' + match[1];
     if ('group' === type) return `?g=${href}`;
@@ -191,4 +191,13 @@ var getDateFromURL = function(href) {
         return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`;
     } else
         return undefined;
+};
+
+/**
+ * @TODO
+ */
+
+var showSection = function(section) {
+    $(`#${section}`).show();
+    $(`li a[href="#${section}"]`).css('display', 'block');
 };
