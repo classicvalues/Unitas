@@ -125,7 +125,6 @@ var processURL = function() {
         type = TYPE_W3C;
         return false;
     }
-    console.log('type: ' + type + '; id: ' + id);
     return true;
 };
 
@@ -146,7 +145,7 @@ var buildIndex = function() {
  * @TODO
  */
 
-var buildLink = function(href) {
+var buildLink = function(href, type) {
     var REGEX_DOMAIN = /\/domains\/(\d+)$/i,
         REGEX_GROUP = /\/groups\/(\d+)$/i,
         REGEX_CHARTER = /\/groups\/(\d+)\/charters\/(\d+)$/i,
@@ -160,10 +159,12 @@ var buildLink = function(href) {
     if (match && match.length > 1) return '?d=' + match[1];
     match = REGEX_GROUP.exec(href);
     if (match && match.length > 1) return '?g=' + match[1];
+    if ('group' === type) return `?g=${href}`;
     match = REGEX_CHARTER.exec(href);
     if (match && match.length > 2) return '?g=' + match[1] + '&c=' + match[2];
     match = REGEX_SPEC.exec(href);
     if (match && match.length > 1) return '?s=' + match[1];
+    if ('spec' === type) return `?s=${href}`;
     match = REGEX_VERSION.exec(href);
     if (match && match.length > 2) return '?s=' + match[1] + '&v=' + match[2];
     match = REGEX_USER.exec(href);
@@ -174,6 +175,7 @@ var buildLink = function(href) {
     if (match && match.length > 1) return '?p=' + match[1];
     match = REGEX_AFFILIATIONS.exec(href);
     if (match && match.length > 1) return '?a=' + match[1];
+    if ('affiliation' === type) return `?a=${href}`;
     return href;
 };
 

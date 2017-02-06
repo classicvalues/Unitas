@@ -326,6 +326,10 @@ li a[href='#dashboard'] {
     display: none;
 }
 
+.suffix {
+    opacity: .6667;
+}
+
 /************************************** Images */
 
 img.panel-body {
