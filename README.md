@@ -32,12 +32,13 @@ With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unita
 ### How to test locally
 
 1. Clone this repository and check out the desired branch.
-1. Edit [this couple of lines at the beginning of `behaviour.js`](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js#L3-L4) to use your own API key (and,
-  optionally, to enable debugging, so that useful messages are printed on the JavaScript console of your browser).
-1. Serve the page (`index.html` and related resources) locally, setting up your local web server appropriately.
+1. Edit [this couple of lines at the beginning of `behaviour.js`](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js#L4-L5) to use
+   [your own API key](https://w3c.github.io/w3c-api/#apikeys) (and, optionally, to enable debugging, so that useful messages are printed on the JavaScript
+   console of your browser).
+1. Serve the page (`index.html` and related resources) locally, setting up your web server appropriately.
 1. Use Unitas by visiting [`http://localhost/unitas/`](http://localhost/unitas/) (assuming that's where it's being served).
-  (As all items are inter-linked, you can start anywhere and pretty much navigate your way to any other valid page in the system.
-  But the root page `/` is a useful entry point.)
+   As all items are inter-linked, you can start anywhere and pretty much navigate your way to any other valid page in the system.
+   But the root page `/` is a useful entry point.
 
 ### About the API key
 
