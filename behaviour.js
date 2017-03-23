@@ -1,10 +1,11 @@
 'use strict';
 
-var VERSION = '2.2.0',
+var VERSION = '2.3.0',
     API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     DEBUG = false,
     OPTS = {embed: true},
     REGEX_URI = /^(https?|irc):\/\/(www\.)?((.+)[^\ \/])\/?$/i,
+    TWITTER_URI = /^https?:\/\/(www\.)?twitter.com\/([^\ \/]+)\/?$/i,
     REGEX_DATE = /^[\d\-\/\.\ ]{8,10}$/i,
     MODE = 'param',
     TYPE_W3C = 'w3c',
@@ -379,6 +380,14 @@ var init = function(api) {
                         <a href="${buildLink(entity._links.self.href)}">
                             <code>${normaliseURI(entity.link)}</code>
                             <span class="suffix">(RSS)</span>
+                        </a>
+                    </li>`;
+                } else if ('twitter' === entity.type) {
+                    // Twitter:
+                    result = `<li class="list-group-item">
+                        <a href="${buildLink(entity._links.self.href)}">
+                            <code>${normaliseURI(entity.link)}</code>
+                            <span class="suffix">(Twitter)</span>
                         </a>
                     </li>`;
                 } else {

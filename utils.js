@@ -52,10 +52,14 @@ var abbreviateGroupName = function(name) {
 var normaliseURI = function(uri) {
 
     var result = uri.trim(); // .toLowerCase();
-    var matches = REGEX_URI.exec(result);
+    var matches = TWITTER_URI.exec(result);
 
-    if (matches && matches.length > 3) {
-        result = matches[3];
+    if (matches && matches.length > 2)
+        result = `@${matches[2]}`;
+    else {
+        matches = REGEX_URI.exec(result);
+        if (matches && matches.length > 3)
+            result = matches[3];
     }
 
     return result;
