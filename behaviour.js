@@ -1,6 +1,6 @@
 'use strict';
 
-var VERSION = '2.3.0',
+var VERSION = '2.4.0',
     API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     DEBUG = false,
     OPTS = {embed: true},
@@ -366,8 +366,12 @@ var init = function(api) {
                             <span class="suffix">(blog)</span>
                         </a>
                     </li>`;
-                } else if ('tracker' === entity.type || 'repository' === entity.type || 'wiki' === entity.type || 'chat' === entity.type) {
-                    // Tracker, repo, wiki or chat:
+                } else if ('tracker' === entity.type ||
+                    'repository' === entity.type ||
+                    'wiki' === entity.type ||
+                    'chat' === entity.type ||
+                    'forum' === entity.type) {
+                    // Tracker, repo, wiki, chat or forum:
                     result = `<li class="list-group-item">
                         <a href="${buildLink(entity._links.self.href)}">
                             <code>${normaliseURI(entity.link)}</code>
