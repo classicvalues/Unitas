@@ -51,16 +51,13 @@ Make sure you [replace it](https://github.com/w3c/Unitas/blob/master/behaviour.j
 Resources are loaded this way:
 
 * [`index.html`](https://github.com/w3c/Unitas/blob/master/index.html)
-  * CSS
-    [`https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css`](https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css)
-  * CSS
-    [`style.css`](https://github.com/w3c/Unitas/blob/master/style.css)
-  * JS [`https://requirejs.org/docs/release/2.2.0/comments/require.js`](https://requirejs.org/docs/release/2.2.0/comments/require.js)
+  * CSS [`https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css`](https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css)
+  * CSS [`style.css`](https://github.com/w3c/Unitas/blob/master/style.css)
+  * JS [`https://requirejs.org/docs/release/2.3.3/comments/require.js`](https://requirejs.org/docs/release/2.3.3/comments/require.js)
     * JS [`behaviour.js`](https://github.com/w3c/Unitas/blob/master/behaviour.js)
         * JS [`https://w3c.github.io/node-w3capi/lib/w3capi.js`](https://w3c.github.io/node-w3capi/lib/w3capi.js)
-        * JS [`https://code.jquery.com/jquery-2.2.3.js`](https://code.jquery.com/jquery-2.2.3.js)
-        * JS
-          [`https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js`](https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js)
+        * JS [`https://code.jquery.com/jquery-2.2.4.js`](https://code.jquery.com/jquery-2.2.4.js)
+        * JS [`https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js`](https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.js)
         * JS [`utils.js`](https://github.com/w3c/Unitas/blob/master/utils.js)
 
 This cascading is far from optimal, of course.
