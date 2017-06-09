@@ -23,7 +23,7 @@ With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unita
 1. A spec: [`/?s=dwbp`](https://w3c.github.io/Unitas/?s=dwbp)
 1. A version: [`/?s=2dcontext&v=20110525`](https://w3c.github.io/Unitas/?s=2dcontext&v=20110525)
 1. A user: [`/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8`](https://w3c.github.io/Unitas/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8)
-1. A service: [`/?x=1913`](https://w3c.github.io/Unitas/?x=1913)
+1. A service: [`/?x=2279`](https://w3c.github.io/Unitas/?x=2279)
 1. A participation: [`/?p=1503`](https://w3c.github.io/Unitas/?p=1503)
 1. An affiliation: [`/?a=52794`](https://w3c.github.io/Unitas/?a=52794)
 
@@ -32,12 +32,13 @@ With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unita
 ### How to test locally
 
 1. Clone this repository and check out the desired branch.
-1. Edit [this couple of lines at the beginning of `behaviour.js`](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js#L3-L4) to use your own API key (and,
-  optionally, to enable debugging, so that useful messages are printed on the JavaScript console of your browser).
-1. Serve the page (`index.html` and related resources) locally, setting up your local web server appropriately.
+1. Edit [this couple of lines at the beginning of `behaviour.js`](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js#L4-L5) to use
+   [your own API key](https://w3c.github.io/w3c-api/#apikeys) (and, optionally, to enable debugging, so that useful messages are printed on the JavaScript
+   console of your browser).
+1. Serve the page (`index.html` and related resources) locally, setting up your web server appropriately.
 1. Use Unitas by visiting [`http://localhost/unitas/`](http://localhost/unitas/) (assuming that's where it's being served).
-  (As all items are inter-linked, you can start anywhere and pretty much navigate your way to any other valid page in the system.
-  But the root page `/` is a useful entry point.)
+   As all items are inter-linked, you can start anywhere and pretty much navigate your way to any other valid page in the system.
+   But the root page `/` is a useful entry point.
 
 ### About the API key
 
