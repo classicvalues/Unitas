@@ -1,6 +1,6 @@
 'use strict';
 
-var VERSION = '2.4.0',
+var VERSION = '2.4.1',
     API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     DEBUG = false,
     OPTS = {embed: true},
@@ -264,13 +264,13 @@ var init = function(api) {
          * g=all: groups.
          * s=all: specs.
          * a=all: affiliations.
-         * f=6823109: users, services.
+         * f=109: users, services.
          * g=68239: users x 3, services, specs, charters, participations.
          * g=46300&c=155: (none).
          * s=dwbp: versions.
          * s=2dcontext&v=20110525: groups, users, versions x 2.
          * u=ggdj8tciu9kwwc4o4ww888ggkwok0c8: participations, groups, specs, affiliations.
-         * x=1913: groups.
+         * x=2279: groups.
          * p=1503: users.
          * a=52794: users, groups.
          */
@@ -463,7 +463,7 @@ var init = function(api) {
                     return window.alert(`Error: "${error}"`);
                 } else {
                     if (DEBUG)
-                        console.dir(data);
+                        console.debug(JSON.stringify(data, null, 4));
                     var humanValue,
                         widget = $('#sample-widget').clone(),
                         item;
@@ -584,7 +584,7 @@ var init = function(api) {
                 return window.alert(`Error: "${error}"`);
             } else {
                 if (DEBUG)
-                    console.dir(data);
+                    console.debug(JSON.stringify(data, null, 4));
                 var name = '[Item]';
                 if (undefined === id) {
                     name = 'All ';

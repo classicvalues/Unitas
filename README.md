@@ -23,7 +23,7 @@ With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unita
 1. A spec: [`/?s=dwbp`](https://w3c.github.io/Unitas/?s=dwbp)
 1. A version: [`/?s=2dcontext&v=20110525`](https://w3c.github.io/Unitas/?s=2dcontext&v=20110525)
 1. A user: [`/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8`](https://w3c.github.io/Unitas/?u=ggdj8tciu9kwwc4o4ww888ggkwok0c8)
-1. A service: [`/?x=1913`](https://w3c.github.io/Unitas/?x=1913)
+1. A service: [`/?x=2279`](https://w3c.github.io/Unitas/?x=2279)
 1. A participation: [`/?p=1503`](https://w3c.github.io/Unitas/?p=1503)
 1. An affiliation: [`/?a=52794`](https://w3c.github.io/Unitas/?a=52794)
 
