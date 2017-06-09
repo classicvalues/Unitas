@@ -720,15 +720,12 @@ var init = function(api) {
 requirejs.config({
     paths: {
         w3capi: 'https://w3c.github.io/node-w3capi/lib/w3capi',
-        // w3capi: 'https://raw.githubusercontent.com/w3c/node-w3capi/tripu/fix-versions/lib/w3capi',
-        // w3capi: 'w3capi',
         // @TODO: switch to minified jQuery in production:
         // jquery: 'https://code.jquery.com/jquery-2.2.4.min',
         jquery: 'https://code.jquery.com/jquery-2.2.4',
         // @TODO: switch to minified Bootstrap JS in production:
-        // bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min',
-        // bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap',
-        bootstrap: 'https://www.w3.org/scripts/bootstrap/3.3.4/js/bootstrap',
+        // bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min',
+        bootstrap: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap',
         utils: 'utils'
     },
     shim: {
