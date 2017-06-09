@@ -32,7 +32,7 @@ With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unita
 ### How to test locally
 
 1. Clone this repository and check out the desired branch.
-1. Edit [this couple of lines at the beginning of `behaviour.js`](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js#L4-L5) to use
+1. Edit [this couple of lines at the beginning of `behaviour.js`](https://github.com/w3c/Unitas/blob/master/behaviour.js#L4-L5) to use
    [your own API key](https://w3c.github.io/w3c-api/#apikeys) (and, optionally, to enable debugging, so that useful messages are printed on the JavaScript
    console of your browser).
 1. Serve the page (`index.html` and related resources) locally, setting up your web server appropriately.
@@ -44,24 +44,24 @@ With no arguments (or with *wrong* arguments): [`/`](https://w3c.github.io/Unita
 
 :warning: the [W3C API key](https://w3c.github.io/w3c-api/#apikeys) embedded in this project will work *from the domain `w3c.github.io` only*, as it is for
 demonstration purposes on GitHub pages.
-Make sure you [replace it](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js#L3) with your own API to use it with `localhost://` or other origins.
+Make sure you [replace it](https://github.com/w3c/Unitas/blob/master/behaviour.js#L4) with your own API to use it with `localhost://` or other origins.
 
 ### Dependencies
 
 Resources are loaded this way:
 
-* [`index.html`](https://github.com/w3c/Unitas/blob/gh-pages/index.html)
+* [`index.html`](https://github.com/w3c/Unitas/blob/master/index.html)
   * CSS
     [`https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css`](https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css)
   * CSS
-    [`style.css`](https://github.com/w3c/Unitas/blob/gh-pages/style.css)
+    [`style.css`](https://github.com/w3c/Unitas/blob/master/style.css)
   * JS [`https://requirejs.org/docs/release/2.2.0/comments/require.js`](https://requirejs.org/docs/release/2.2.0/comments/require.js)
-    * JS [`behaviour.js`](https://github.com/w3c/Unitas/blob/gh-pages/behaviour.js)
+    * JS [`behaviour.js`](https://github.com/w3c/Unitas/blob/master/behaviour.js)
         * JS [`https://w3c.github.io/node-w3capi/lib/w3capi.js`](https://w3c.github.io/node-w3capi/lib/w3capi.js)
         * JS [`https://code.jquery.com/jquery-2.2.3.js`](https://code.jquery.com/jquery-2.2.3.js)
         * JS
           [`https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js`](https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.js)
-        * JS [`utils.js`](https://github.com/w3c/Unitas/blob/gh-pages/utils.js)
+        * JS [`utils.js`](https://github.com/w3c/Unitas/blob/master/utils.js)
 
 This cascading is far from optimal, of course.
 It is useful during development and for debugging, though.
