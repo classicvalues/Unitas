@@ -1,6 +1,6 @@
 'use strict';
 
-var VERSION = '2.5.0',
+var VERSION = '2.6.0',
     API_KEY = 'f093zc7jyxskgscw0kkgk4w4go0w80k',
     DEBUG = false,
     OPTS = {embed: true},
