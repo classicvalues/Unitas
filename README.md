@@ -1,6 +1,9 @@
 # Unitas
 
-Prototypes for the &ldquo;dynamic pages&rdquo; project
+*Prototypes for the &ldquo;dynamic pages&rdquo; project*
+
+:warning: This project is discontinued, and not being actively maintained.  
+For alternatives, see [related projects on GitHub](#related-projects-on-github).
 
 ## Examples
 
@@ -84,6 +87,6 @@ In production, resources will be concatenated and loaded in parallel, and minifi
 
 ## Credits
 
-Copyright &copy; 2016&ndash;2017 [World Wide Web Consortium](https://www.w3.org/).
+Copyright &copy; 2016&ndash;2018 [World Wide Web Consortium](https://www.w3.org/).
 
 This project is licensed [under the terms of the MIT license](LICENSE.md).
